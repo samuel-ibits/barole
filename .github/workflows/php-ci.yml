@@ -1,0 +1,50 @@
+name: PHP CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, bcmath, pdo_mysql
+          coverage: none
+
+      - name: Install dependencies (if any)
+        run: |
+          if [ -f "composer.json" ]; then
+            composer install --no-interaction --prefer-dist
+          fi
+
+      - name: Run tests (if you have them)
+        run: |
+          if [ -f "phpunit.xml" ]; then
+            vendor/bin/phpunit --testdox
+          fi
+  deploy:
+    needs: build-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.3d7_SERVER_HOST }}
+          username: ${{ secrets.3d7_SERVER_USER }}
+          key: ${{ secrets.3d7_SERVER_SSH_KEY }}
+          script: |
+            cd /var/www/your-php-app
+            git pull origin main
+            composer install --no-dev --optimize-autoloader || true
+            php -l index.php  # simple syntax check
