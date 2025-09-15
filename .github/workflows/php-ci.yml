@@ -31,20 +31,30 @@ jobs:
           if [ -f "phpunit.xml" ]; then
             vendor/bin/phpunit --testdox
           fi
+
   deploy:
     needs: build-test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
 
     steps:
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v0.1.10
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Upload via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
-          host: ${{ secrets.3d7_SERVER_HOST }}
-          username: ${{ secrets.3d7_SERVER_USER }}
-          key: ${{ secrets.3d7_SERVER_SSH_KEY }}
-          script: |
-            cd /var/www/your-php-app
-            git pull origin main
-            composer install --no-dev --optimize-autoloader || true
-            php -l index.php  # simple syntax check
+          server: ${{ secrets.D7_FTP_SERVER }}
+          username: ${{ secrets.D7_FTP_USER }}
+          password: ${{ secrets.D7_FTP_PASSWORD }}
+          protocol: ftp          # or 'ftps' / 'sftp' depending on host
+          local-dir: ./          # directory in your repo to upload
+          server-dir: /public_html/your-php-app
+          exclude: |
+            **/.git*
+            **/.github*
+            **/node_modules/**
+            **/vendor/**
+            composer.lock
+
+
