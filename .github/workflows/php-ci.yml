@@ -49,7 +49,7 @@ jobs:
           password: ${{ secrets.D7_FTP_PASSWORD }}
           protocol: ftp          # or 'ftps' / 'sftp' depending on host
           local-dir: ./          # directory in your repo to upload
-          server-dir: /public_html/your-php-app
+          server-dir: /home/d7tech/barole.3d7tech.com/barole
           exclude: |
             **/.git*
             **/.github*
