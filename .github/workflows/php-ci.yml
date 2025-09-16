@@ -47,8 +47,8 @@ jobs:
           server: ${{ secrets.D7_FTP_SERVER }}
           username: ${{ secrets.D7_FTP_USER }}
           password: ${{ secrets.D7_FTP_PASSWORD }}
-          protocol: ftp          # or 'ftps' / 'sftp' depending on host
-          local-dir: ./          # directory in your repo to upload
+          protocol: ftp          
+          local-dir: ./          
           server-dir: /home/d7tech/barole.3d7tech.com/barole/
           exclude: |
             **/.git*

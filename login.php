@@ -51,6 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } catch (Exception $e) {
                     // Continue even if update fails
                     error_log("Failed to update last login: " . $e->getMessage());
+                    echo $e->getMessage();
                 }
                 
                 $success = "Login successful! Redirecting...";

@@ -5,7 +5,7 @@
  */
 
 // Environment detection
-$isProduction = (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] !== 'localhost' && $_SERVER['HTTP_HOST'] !== '127.0.0.1');
+$isProduction = (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] !== 'localhost' && $_SERVER['HTTP_HOST'] !== '127.0.0.1'&& $_SERVER['HTTP_HOST'] !== 'barole.io');
 
 if ($isProduction) {
     // Production Database Configuration (MySQL for cPanel/hosting)
