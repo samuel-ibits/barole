@@ -359,6 +359,204 @@ define('APP_NAME', 'ETRM System');
                 </div>
             </div>
         </div>
+                <!-- Market Prices -->
+        <div class="tab-pane fade" id="market-prices" role="tabpanel">
+        <div class="mt-3">
+            <h4>Market Prices</h4>
+            <button class="btn btn-primary mb-3" data-action="create-market-price">
+            <i class="bi bi-plus"></i> New Market Price
+            </button>
+            <div id="market-prices-table"></div>
+        </div>
+        </div>
+
+        <!-- Contract Type -->
+        <div class="tab-pane fade" id="contract-type" role="tabpanel">
+        <div class="mt-3">
+            <h4>Contract Type</h4>
+            <button class="btn btn-primary mb-3" data-action="create-contract-type">
+            <i class="bi bi-plus"></i> New Contract Type
+            </button>
+            <div id="contract-type-table"></div>
+        </div>
+        </div>
+
+        <!-- Commodity Name -->
+        <div class="tab-pane fade" id="commodity-name" role="tabpanel">
+        <div class="mt-3">
+            <h4>Commodity Name</h4>
+            <button class="btn btn-primary mb-3" data-action="create-commodity">
+            <i class="bi bi-plus"></i> New Commodity
+            </button>
+            <div id="commodity-name-table"></div>
+        </div>
+        </div>
+
+        <!-- Product UOM -->
+        <div class="tab-pane fade" id="product-uom" role="tabpanel">
+        <div class="mt-3">
+            <h4>Product UOM</h4>
+            <button class="btn btn-primary mb-3" data-action="create-product-uom">
+            <i class="bi bi-plus"></i> New UOM
+            </button>
+            <div id="product-uom-table"></div>
+        </div>
+        </div>
+
+        <!-- Pricing Unit -->
+        <div class="tab-pane fade" id="pricing-unit" role="tabpanel">
+        <div class="mt-3">
+            <h4>Pricing Unit</h4>
+            <button class="btn btn-primary mb-3" data-action="create-pricing-unit">
+            <i class="bi bi-plus"></i> New Pricing Unit
+            </button>
+            <div id="pricing-unit-table"></div>
+        </div>
+        </div>
+
+        <!-- Pricing Formula -->
+        <div class="tab-pane fade" id="pricing-formula" role="tabpanel">
+        <div class="mt-3">
+            <h4>Pricing Formula</h4>
+            <button class="btn btn-primary mb-3" data-action="create-pricing-formula">
+            <i class="bi bi-plus"></i> New Pricing Formula
+            </button>
+            <div id="pricing-formula-table"></div>
+        </div>
+        </div>
+
+        <!-- Market Index -->
+        <div class="tab-pane fade" id="market-index" role="tabpanel">
+        <div class="mt-3">
+            <h4>Market Index</h4>
+            <button class="btn btn-primary mb-3" data-action="create-market-index">
+            <i class="bi bi-plus"></i> New Index
+            </button>
+            <div id="market-index-table"></div>
+        </div>
+        </div>
+
+        <!-- Payment Terms -->
+        <div class="tab-pane fade" id="payment-terms" role="tabpanel">
+        <div class="mt-3">
+            <h4>Payment Terms</h4>
+            <button class="btn btn-primary mb-3" data-action="create-payment-term">
+            <i class="bi bi-plus"></i> New Payment Term
+            </button>
+            <div id="payment-terms-table"></div>
+        </div>
+        </div>
+
+        <!-- Transfer Method -->
+        <div class="tab-pane fade" id="transfer-method" role="tabpanel">
+        <div class="mt-3">
+            <h4>Transfer Method</h4>
+            <button class="btn btn-primary mb-3" data-action="create-transfer-method">
+            <i class="bi bi-plus"></i> New Transfer Method
+            </button>
+            <div id="transfer-method-table"></div>
+        </div>
+        </div>
+
+        <!-- Governing Body -->
+        <div class="tab-pane fade" id="governing-body" role="tabpanel">
+        <div class="mt-3">
+            <h4>Governing Body</h4>
+            <button class="btn btn-primary mb-3" data-action="create-governing-body">
+            <i class="bi bi-plus"></i> New Governing Body
+            </button>
+            <div id="governing-body-table"></div>
+        </div>
+        </div>
+
+        <!-- Load Profit -->
+        <div class="tab-pane fade" id="load-profit" role="tabpanel">
+        <div class="mt-3">
+            <h4>Load Profit</h4>
+            <button class="btn btn-primary mb-3" data-action="create-load-profit">
+            <i class="bi bi-plus"></i> New Load Profit
+            </button>
+            <div id="load-profit-table"></div>
+        </div>
+        </div>
+
+        <!-- Discharging Port -->
+        <div class="tab-pane fade" id="discharging-port" role="tabpanel">
+        <div class="mt-3">
+            <h4>Discharging Port</h4>
+            <button class="btn btn-primary mb-3" data-action="create-discharging-port">
+            <i class="bi bi-plus"></i> New Port
+            </button>
+            <div id="discharging-port-table"></div>
+        </div>
+        </div>
+
+        <!-- Pricing UOM -->
+        <div class="tab-pane fade" id="pricing-uom" role="tabpanel">
+        <div class="mt-3">
+            <h4>Pricing UOM</h4>
+            <button class="btn btn-primary mb-3" data-action="create-pricing-uom">
+            <i class="bi bi-plus"></i> New Pricing UOM
+            </button>
+            <div id="pricing-uom-table"></div>
+        </div>
+        </div>
+
+        <!-- Internal BU -->
+        <div class="tab-pane fade" id="internal-bu" role="tabpanel">
+        <div class="mt-3">
+            <h4>Internal BU</h4>
+            <button class="btn btn-primary mb-3" data-action="create-internal-bu">
+            <i class="bi bi-plus"></i> New BU
+            </button>
+            <div id="internal-bu-table"></div>
+        </div>
+        </div>
+
+        <!-- API FIX Trade Capture -->
+        <div class="tab-pane fade" id="api-fix" role="tabpanel">
+        <div class="mt-3">
+            <h4>API FIX Trade Capture</h4>
+            <button class="btn btn-primary mb-3" data-action="create-api-fix">
+            <i class="bi bi-plus"></i> New Capture
+            </button>
+            <div id="api-fix-table"></div>
+        </div>
+        </div>
+
+        <!-- Portfolio -->
+        <div class="tab-pane fade" id="portfolio-master" role="tabpanel">
+        <div class="mt-3">
+            <h4>Portfolio</h4>
+            <button class="btn btn-primary mb-3" data-action="create-portfolio">
+            <i class="bi bi-plus"></i> New Portfolio
+            </button>
+            <div id="portfolio-table"></div>
+        </div>
+        </div>
+
+        <!-- Exchange -->
+        <div class="tab-pane fade" id="exchange" role="tabpanel">
+        <div class="mt-3">
+            <h4>Exchange</h4>
+            <button class="btn btn-primary mb-3" data-action="create-exchange">
+            <i class="bi bi-plus"></i> New Exchange
+            </button>
+            <div id="exchange-table"></div>
+        </div>
+        </div>
+
+        <!-- Currency -->
+        <div class="tab-pane fade" id="currency" role="tabpanel">
+        <div class="mt-3">
+            <h4>Currency</h4>
+            <button class="btn btn-primary mb-3" data-action="create-currency">
+            <i class="bi bi-plus"></i> New Currency
+            </button>
+            <div id="currency-table"></div>
+        </div>
+        </div>
+
 
         <!-- Master Data Tab -->
         <div id="master-data-tab" class="main-tab">
@@ -401,6 +599,134 @@ define('APP_NAME', 'ETRM System');
                         <i class="bi bi-truck"></i> Carriers
                     </button>
                 </li>
+      
+                <li class="nav-item">
+                    <button class="nav-link" id="market-prices-tab" data-bs-toggle="tab"
+                    data-bs-target="#market-prices" type="button" role="tab">
+                    <i class="bi bi-currency-dollar"></i> Market Prices
+                    </button>
+                </li>
+
+                <li class="nav-item">
+                    <button class="nav-link" id="contract-type-tab" data-bs-toggle="tab"
+                    data-bs-target="#contract-type" type="button" role="tab">
+                    <i class="bi bi-file-earmark"></i> Contract Type
+                    </button>
+                </li>
+
+                <li class="nav-item">
+                    <button class="nav-link" id="commodity-name-tab" data-bs-toggle="tab"
+                    data-bs-target="#commodity-name" type="button" role="tab">
+                    <i class="bi bi-basket"></i> Commodity Name
+                    </button>
+                </li>
+
+                <li class="nav-item">
+                    <button class="nav-link" id="product-uom-tab" data-bs-toggle="tab"
+                    data-bs-target="#product-uom" type="button" role="tab">
+                    <i class="bi bi-rulers"></i> Product UOM
+                    </button>
+                </li>
+
+                <li class="nav-item">
+                    <button class="nav-link" id="pricing-unit-tab" data-bs-toggle="tab"
+                    data-bs-target="#pricing-unit" type="button" role="tab">
+                    <i class="bi bi-diagram-2"></i> Pricing Unit
+                    </button>
+                </li>
+
+                <li class="nav-item">
+                    <button class="nav-link" id="pricing-formula-tab" data-bs-toggle="tab"
+                    data-bs-target="#pricing-formula" type="button" role="tab">
+                    <i class="bi bi-function"></i> Pricing Formula
+                    </button>
+                </li>
+
+                <li class="nav-item">
+                    <button class="nav-link" id="market-index-tab" data-bs-toggle="tab"
+                    data-bs-target="#market-index" type="button" role="tab">
+                    <i class="bi bi-bar-chart"></i> Market Index
+                    </button>
+                </li>
+
+                <li class="nav-item">
+                    <button class="nav-link" id="payment-terms-tab" data-bs-toggle="tab"
+                    data-bs-target="#payment-terms" type="button" role="tab">
+                    <i class="bi bi-wallet2"></i> Payment Terms
+                    </button>
+                </li>
+
+                <li class="nav-item">
+                    <button class="nav-link" id="transfer-method-tab" data-bs-toggle="tab"
+                    data-bs-target="#transfer-method" type="button" role="tab">
+                    <i class="bi bi-arrow-left-right"></i> Transfer Method
+                    </button>
+                </li>
+
+                <li class="nav-item">
+                    <button class="nav-link" id="governing-body-tab" data-bs-toggle="tab"
+                    data-bs-target="#governing-body" type="button" role="tab">
+                    <i class="bi bi-bank"></i> Governing Body
+                    </button>
+                </li>
+
+                <li class="nav-item">
+                    <button class="nav-link" id="load-profit-tab" data-bs-toggle="tab"
+                    data-bs-target="#load-profit" type="button" role="tab">
+                    <i class="bi bi-graph-up-arrow"></i> Load Profit
+                    </button>
+                </li>
+
+                <li class="nav-item">
+                    <button class="nav-link" id="discharging-port-tab" data-bs-toggle="tab"
+                    data-bs-target="#discharging-port" type="button" role="tab">
+                    <i class="bi bi-geo"></i> Discharging Port
+                    </button>
+                </li>
+
+                <li class="nav-item">
+                    <button class="nav-link" id="pricing-uom-tab" data-bs-toggle="tab"
+                    data-bs-target="#pricing-uom" type="button" role="tab">
+                    <i class="bi bi-rulers"></i> Pricing UOM
+                    </button>
+                </li>
+
+                <li class="nav-item">
+                    <button class="nav-link" id="internal-bu-tab" data-bs-toggle="tab"
+                    data-bs-target="#internal-bu" type="button" role="tab">
+                    <i class="bi bi-building"></i> Internal BU
+                    </button>
+                </li>
+
+                <li class="nav-item">
+                    <button class="nav-link" id="api-fix-tab" data-bs-toggle="tab"
+                    data-bs-target="#api-fix" type="button" role="tab">
+                    <i class="bi bi-plug"></i> API FIX Trade Capture
+                    </button>
+                </li>
+
+                <li class="nav-item">
+                    <button class="nav-link" id="portfolio-master-tab" data-bs-toggle="tab"
+                    data-bs-target="#portfolio-master" type="button" role="tab">
+                    <i class="bi bi-briefcase"></i> Portfolio
+                    </button>
+                </li>
+
+                <li class="nav-item">
+                    <button class="nav-link" id="exchange-tab" data-bs-toggle="tab"
+                    data-bs-target="#exchange" type="button" role="tab">
+                    <i class="bi bi-building"></i> Exchange
+                    </button>
+                </li>
+
+                <li class="nav-item">
+                    <button class="nav-link" id="currency-tab" data-bs-toggle="tab"
+                    data-bs-target="#currency" type="button" role="tab">
+                    <i class="bi bi-cash"></i> Currency
+                    </button>
+                </li>
+
+
             </ul>
             
             <div class="tab-content" id="masterDataTabContent">
@@ -517,6 +843,20 @@ define('APP_NAME', 'ETRM System');
                         <i class="bi bi-activity"></i> Activity
                     </button>
                 </li>
+                <li class="nav-item">
+                <button class="nav-link" id="security-privilege-tab" data-bs-toggle="tab"
+                    data-bs-target="#security-privilege" type="button" role="tab">
+                    <i class="bi bi-key"></i> Security Privilege
+                </button>
+                </li>
+
+                <li class="nav-item">
+                <button class="nav-link" id="trade-status-tab" data-bs-toggle="tab"
+                    data-bs-target="#trade-status" type="button" role="tab">
+                    <i class="bi bi-check2-circle"></i> Trade Status
+                </button>
+                </li>
+
             </ul>
             
             <div class="tab-content" id="userManagementTabContent">
@@ -575,7 +915,29 @@ define('APP_NAME', 'ETRM System');
                         </div>
                     </div>
                 </div>
-                
+                <!-- Security Privilege -->
+                <div class="tab-pane fade" id="security-privilege" role="tabpanel">
+                <div class="mt-3">
+                    <h4>Security Privileges</h4>
+                    <button class="btn btn-primary mb-3" data-action="create-privilege">
+                    <i class="bi bi-plus"></i> New Privilege
+                    </button>
+                    <div id="security-privilege-table"></div>
+                </div>
+                </div>
+
+                <!-- Trade Status -->
+                <div class="tab-pane fade" id="trade-status" role="tabpanel">
+                <div class="mt-3">
+                    <h4>Trade Status</h4>
+                    <button class="btn btn-primary mb-3" data-action="create-trade-status">
+                    <i class="bi bi-plus"></i> New Trade Status
+                    </button>
+                    <div id="trade-status-table"></div>
+                </div>
+                </div>
+                </div>
+
                 <!-- Roles Tab -->
                 <div class="tab-pane fade" id="roles" role="tabpanel">
                     <div class="mt-3">
