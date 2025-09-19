@@ -50,7 +50,7 @@ jobs:
           password: ${{ secrets.D7_FTP_PASSWORD }}
           protocol: ftp
           local-dir: ./
-          server-dir: /home/d7tech/barole.3d7tech.com/barole/
+          server-dir: /home/d7tech/barole.3d7tech.com/
           exclude: |
             **/.git*
             **/.github*
@@ -63,11 +63,11 @@ jobs:
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.D7_FTP_SERVER }}
-          username: ${{ secrets.D7_FTP_USER }}
+          username: ${{ secrets.D7_STAGING_FTP_USER }}
           password: ${{ secrets.D7_STAGING_FTP_PASSWORD }}
           protocol: ftp
           local-dir: ./
-          server-dir: /home/d7tech/barole-staging.3d7tech.com/barole/
+          server-dir: /home/d7tech/barole-staging.3d7tech.com/
           exclude: |
             **/.git*
             **/.github*
