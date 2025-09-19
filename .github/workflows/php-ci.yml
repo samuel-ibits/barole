@@ -74,3 +74,6 @@ jobs:
             **/node_modules/**
             **/vendor/**
             composer.lock
+            config/*.php
+            .htaccess
+            log/
