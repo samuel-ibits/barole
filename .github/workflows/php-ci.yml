@@ -50,7 +50,7 @@ jobs:
           password: ${{ secrets.D7_FTP_PASSWORD }}
           protocol: ftp
           local-dir: ./
-          server-dir: /home/d7tech/barole.3d7tech.com/
+          server-dir: /home/d7tech/barole.3d7tech.com/barole/
           exclude: |
             **/.git*
             **/.github*
@@ -67,7 +67,7 @@ jobs:
           password: ${{ secrets.D7_STAGING_FTP_PASSWORD }}
           protocol: ftp
           local-dir: ./
-          server-dir: /home/d7tech/barole-staging.3d7tech.com/
+          server-dir: /home/d7tech/barole-staging.3d7tech.com/barole/
           exclude: |
             **/.git*
             **/.github*
