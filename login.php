@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $db = getDB();
             $stmt = $db->query("SELECT * FROM users WHERE username = ? AND status = 'active'", [$username]);
             $user = $stmt->fetch();
-            
+    
             if ($user && password_verify($password, $user['password_hash'])) {
                 // Set session variables (simple approach)
                 $_SESSION['user_id'] = $user['id'];
@@ -60,6 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error = "Invalid username or password";
             }
         } catch (Exception $e) {
+            echo $e->getMessage();
             error_log("Login error: " . $e->getMessage());
             $error = "Login failed. Please try again.";
         }
@@ -67,8 +68,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // App constants (simplified)
-define('APP_NAME', 'ETRM System');
-define('APP_VERSION', '2.0.0');
+// define('APP_NAME', 'ETRM System');
+// define('APP_VERSION', '2.0.0');
 ?>
 <!DOCTYPE html>
 <html lang="en">

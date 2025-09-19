@@ -7,7 +7,7 @@
 // Application settings
 define('APP_NAME', 'ETRM System');
 define('APP_VERSION', '2.0.0');
-define('APP_ENV', 'production'); // Changed to production but will show errors temporarily
+define('APP_ENV', 'development'); // Changed to production but will show errors temporarily
 
 // Paths
 define('BASE_PATH', dirname(__DIR__));
@@ -131,9 +131,9 @@ define('MAINTENANCE_MODE', false);
 define('MAINTENANCE_MESSAGE', 'System is under maintenance. Please try again later.');
 
 // Include required files
-require_once CONFIG_PATH . '/database.php';
-require_once INCLUDES_PATH . '/functions.php';
-require_once INCLUDES_PATH . '/auth.php';
-require_once INCLUDES_PATH . '/session.php';
+// require_once CONFIG_PATH . '/database.php';
+// require_once INCLUDES_PATH . '/functions.php';
+// require_once INCLUDES_PATH . '/auth.php';
+// require_once INCLUDES_PATH . '/session.php';
 
 // NOTE: Session initialization moved to individual pages to prevent conflicts 

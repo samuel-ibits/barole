@@ -45,7 +45,7 @@ if (!$userDetails) {
 }
 
 // App constants (simplified)
-define('APP_NAME', 'ETRM System');
+// define('APP_NAME', 'ETRM System');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -359,203 +359,7 @@ define('APP_NAME', 'ETRM System');
                 </div>
             </div>
         </div>
-                <!-- Market Prices -->
-        <div class="tab-pane fade" id="market-prices" role="tabpanel">
-        <div class="mt-3">
-            <h4>Market Prices</h4>
-            <button class="btn btn-primary mb-3" data-action="create-market-price">
-            <i class="bi bi-plus"></i> New Market Price
-            </button>
-            <div id="market-prices-table"></div>
-        </div>
-        </div>
-
-        <!-- Contract Type -->
-        <div class="tab-pane fade" id="contract-type" role="tabpanel">
-        <div class="mt-3">
-            <h4>Contract Type</h4>
-            <button class="btn btn-primary mb-3" data-action="create-contract-type">
-            <i class="bi bi-plus"></i> New Contract Type
-            </button>
-            <div id="contract-type-table"></div>
-        </div>
-        </div>
-
-        <!-- Commodity Name -->
-        <div class="tab-pane fade" id="commodity-name" role="tabpanel">
-        <div class="mt-3">
-            <h4>Commodity Name</h4>
-            <button class="btn btn-primary mb-3" data-action="create-commodity">
-            <i class="bi bi-plus"></i> New Commodity
-            </button>
-            <div id="commodity-name-table"></div>
-        </div>
-        </div>
-
-        <!-- Product UOM -->
-        <div class="tab-pane fade" id="product-uom" role="tabpanel">
-        <div class="mt-3">
-            <h4>Product UOM</h4>
-            <button class="btn btn-primary mb-3" data-action="create-product-uom">
-            <i class="bi bi-plus"></i> New UOM
-            </button>
-            <div id="product-uom-table"></div>
-        </div>
-        </div>
-
-        <!-- Pricing Unit -->
-        <div class="tab-pane fade" id="pricing-unit" role="tabpanel">
-        <div class="mt-3">
-            <h4>Pricing Unit</h4>
-            <button class="btn btn-primary mb-3" data-action="create-pricing-unit">
-            <i class="bi bi-plus"></i> New Pricing Unit
-            </button>
-            <div id="pricing-unit-table"></div>
-        </div>
-        </div>
-
-        <!-- Pricing Formula -->
-        <div class="tab-pane fade" id="pricing-formula" role="tabpanel">
-        <div class="mt-3">
-            <h4>Pricing Formula</h4>
-            <button class="btn btn-primary mb-3" data-action="create-pricing-formula">
-            <i class="bi bi-plus"></i> New Pricing Formula
-            </button>
-            <div id="pricing-formula-table"></div>
-        </div>
-        </div>
-
-        <!-- Market Index -->
-        <div class="tab-pane fade" id="market-index" role="tabpanel">
-        <div class="mt-3">
-            <h4>Market Index</h4>
-            <button class="btn btn-primary mb-3" data-action="create-market-index">
-            <i class="bi bi-plus"></i> New Index
-            </button>
-            <div id="market-index-table"></div>
-        </div>
-        </div>
-
-        <!-- Payment Terms -->
-        <div class="tab-pane fade" id="payment-terms" role="tabpanel">
-        <div class="mt-3">
-            <h4>Payment Terms</h4>
-            <button class="btn btn-primary mb-3" data-action="create-payment-term">
-            <i class="bi bi-plus"></i> New Payment Term
-            </button>
-            <div id="payment-terms-table"></div>
-        </div>
-        </div>
-
-        <!-- Transfer Method -->
-        <div class="tab-pane fade" id="transfer-method" role="tabpanel">
-        <div class="mt-3">
-            <h4>Transfer Method</h4>
-            <button class="btn btn-primary mb-3" data-action="create-transfer-method">
-            <i class="bi bi-plus"></i> New Transfer Method
-            </button>
-            <div id="transfer-method-table"></div>
-        </div>
-        </div>
-
-        <!-- Governing Body -->
-        <div class="tab-pane fade" id="governing-body" role="tabpanel">
-        <div class="mt-3">
-            <h4>Governing Body</h4>
-            <button class="btn btn-primary mb-3" data-action="create-governing-body">
-            <i class="bi bi-plus"></i> New Governing Body
-            </button>
-            <div id="governing-body-table"></div>
-        </div>
-        </div>
-
-        <!-- Load Profit -->
-        <div class="tab-pane fade" id="load-profit" role="tabpanel">
-        <div class="mt-3">
-            <h4>Load Profit</h4>
-            <button class="btn btn-primary mb-3" data-action="create-load-profit">
-            <i class="bi bi-plus"></i> New Load Profit
-            </button>
-            <div id="load-profit-table"></div>
-        </div>
-        </div>
-
-        <!-- Discharging Port -->
-        <div class="tab-pane fade" id="discharging-port" role="tabpanel">
-        <div class="mt-3">
-            <h4>Discharging Port</h4>
-            <button class="btn btn-primary mb-3" data-action="create-discharging-port">
-            <i class="bi bi-plus"></i> New Port
-            </button>
-            <div id="discharging-port-table"></div>
-        </div>
-        </div>
-
-        <!-- Pricing UOM -->
-        <div class="tab-pane fade" id="pricing-uom" role="tabpanel">
-        <div class="mt-3">
-            <h4>Pricing UOM</h4>
-            <button class="btn btn-primary mb-3" data-action="create-pricing-uom">
-            <i class="bi bi-plus"></i> New Pricing UOM
-            </button>
-            <div id="pricing-uom-table"></div>
-        </div>
-        </div>
-
-        <!-- Internal BU -->
-        <div class="tab-pane fade" id="internal-bu" role="tabpanel">
-        <div class="mt-3">
-            <h4>Internal BU</h4>
-            <button class="btn btn-primary mb-3" data-action="create-internal-bu">
-            <i class="bi bi-plus"></i> New BU
-            </button>
-            <div id="internal-bu-table"></div>
-        </div>
-        </div>
-
-        <!-- API FIX Trade Capture -->
-        <div class="tab-pane fade" id="api-fix" role="tabpanel">
-        <div class="mt-3">
-            <h4>API FIX Trade Capture</h4>
-            <button class="btn btn-primary mb-3" data-action="create-api-fix">
-            <i class="bi bi-plus"></i> New Capture
-            </button>
-            <div id="api-fix-table"></div>
-        </div>
-        </div>
-
-        <!-- Portfolio -->
-        <div class="tab-pane fade" id="portfolio-master" role="tabpanel">
-        <div class="mt-3">
-            <h4>Portfolio</h4>
-            <button class="btn btn-primary mb-3" data-action="create-portfolio">
-            <i class="bi bi-plus"></i> New Portfolio
-            </button>
-            <div id="portfolio-table"></div>
-        </div>
-        </div>
-
-        <!-- Exchange -->
-        <div class="tab-pane fade" id="exchange" role="tabpanel">
-        <div class="mt-3">
-            <h4>Exchange</h4>
-            <button class="btn btn-primary mb-3" data-action="create-exchange">
-            <i class="bi bi-plus"></i> New Exchange
-            </button>
-            <div id="exchange-table"></div>
-        </div>
-        </div>
-
-        <!-- Currency -->
-        <div class="tab-pane fade" id="currency" role="tabpanel">
-        <div class="mt-3">
-            <h4>Currency</h4>
-            <button class="btn btn-primary mb-3" data-action="create-currency">
-            <i class="bi bi-plus"></i> New Currency
-            </button>
-            <div id="currency-table"></div>
-        </div>
-        </div>
+               
 
 
         <!-- Master Data Tab -->
@@ -599,8 +403,8 @@ define('APP_NAME', 'ETRM System');
                         <i class="bi bi-truck"></i> Carriers
                     </button>
                 </li>
-      
-                <li class="nav-item">
+                  <!-- new panes -->
+                <li class="nav-item" role="presentation">
                     <button class="nav-link" id="market-prices-tab" data-bs-toggle="tab"
                     data-bs-target="#market-prices" type="button" role="tab">
                     <i class="bi bi-currency-dollar"></i> Market Prices
@@ -808,6 +612,204 @@ define('APP_NAME', 'ETRM System');
                         </div>
                     </div>
                 </div>
+ <!-- Market Prices -->
+        <div class="tab-pane fade" id="market-prices" role="tabpanel">
+        <div class="mt-3">
+            <h4>Market Prices</h4>
+            <button class="btn btn-primary mb-3" data-action="create-market-price">
+            <i class="bi bi-plus"></i> New Market Price
+            </button>
+            <div id="market-prices-table"></div>
+        </div>
+        </div>
+
+        <!-- Contract Type -->
+        <div class="tab-pane fade" id="contract-type" role="tabpanel">
+        <div class="mt-3">
+            <h4>Contract Type</h4>
+            <button class="btn btn-primary mb-3" data-action="create-contract-type">
+            <i class="bi bi-plus"></i> New Contract Type
+            </button>
+            <div id="contract-type-table"></div>
+        </div>
+        </div>
+
+        <!-- Commodity Name -->
+        <div class="tab-pane fade" id="commodity-name" role="tabpanel">
+        <div class="mt-3">
+            <h4>Commodity Name</h4>
+            <button class="btn btn-primary mb-3" data-action="create-commodity">
+            <i class="bi bi-plus"></i> New Commodity
+            </button>
+            <div id="commodity-name-table"></div>
+        </div>
+        </div>
+
+        <!-- Product UOM -->
+        <div class="tab-pane fade" id="product-uom" role="tabpanel">
+        <div class="mt-3">
+            <h4>Product UOM</h4>
+            <button class="btn btn-primary mb-3" data-action="create-product-uom">
+            <i class="bi bi-plus"></i> New UOM
+            </button>
+            <div id="product-uom-table"></div>
+        </div>
+        </div>
+
+        <!-- Pricing Unit -->
+        <div class="tab-pane fade" id="pricing-unit" role="tabpanel">
+        <div class="mt-3">
+            <h4>Pricing Unit</h4>
+            <button class="btn btn-primary mb-3" data-action="create-pricing-unit">
+            <i class="bi bi-plus"></i> New Pricing Unit
+            </button>
+            <div id="pricing-unit-table"></div>
+        </div>
+        </div>
+
+        <!-- Pricing Formula -->
+        <div class="tab-pane fade" id="pricing-formula" role="tabpanel">
+        <div class="mt-3">
+            <h4>Pricing Formula</h4>
+            <button class="btn btn-primary mb-3" data-action="create-pricing-formula">
+            <i class="bi bi-plus"></i> New Pricing Formula
+            </button>
+            <div id="pricing-formula-table"></div>
+        </div>
+        </div>
+
+        <!-- Market Index -->
+        <div class="tab-pane fade" id="market-index" role="tabpanel">
+        <div class="mt-3">
+            <h4>Market Index</h4>
+            <button class="btn btn-primary mb-3" data-action="create-market-index">
+            <i class="bi bi-plus"></i> New Index
+            </button>
+            <div id="market-index-table"></div>
+        </div>
+        </div>
+
+        <!-- Payment Terms -->
+        <div class="tab-pane fade" id="payment-terms" role="tabpanel">
+        <div class="mt-3">
+            <h4>Payment Terms</h4>
+            <button class="btn btn-primary mb-3" data-action="create-payment-term">
+            <i class="bi bi-plus"></i> New Payment Term
+            </button>
+            <div id="payment-terms-table"></div>
+        </div>
+        </div>
+
+        <!-- Transfer Method -->
+        <div class="tab-pane fade" id="transfer-method" role="tabpanel">
+        <div class="mt-3">
+            <h4>Transfer Method</h4>
+            <button class="btn btn-primary mb-3" data-action="create-transfer-method">
+            <i class="bi bi-plus"></i> New Transfer Method
+            </button>
+            <div id="transfer-method-table"></div>
+        </div>
+        </div>
+
+        <!-- Governing Body -->
+        <div class="tab-pane fade" id="governing-body" role="tabpanel">
+        <div class="mt-3">
+            <h4>Governing Body</h4>
+            <button class="btn btn-primary mb-3" data-action="create-governing-body">
+            <i class="bi bi-plus"></i> New Governing Body
+            </button>
+            <div id="governing-body-table"></div>
+        </div>
+        </div>
+
+        <!-- Load Profit -->
+        <div class="tab-pane fade" id="load-profit" role="tabpanel">
+        <div class="mt-3">
+            <h4>Load Profit</h4>
+            <button class="btn btn-primary mb-3" data-action="create-load-profit">
+            <i class="bi bi-plus"></i> New Load Profit
+            </button>
+            <div id="load-profit-table"></div>
+        </div>
+        </div>
+
+        <!-- Discharging Port -->
+        <div class="tab-pane fade" id="discharging-port" role="tabpanel">
+        <div class="mt-3">
+            <h4>Discharging Port</h4>
+            <button class="btn btn-primary mb-3" data-action="create-discharging-port">
+            <i class="bi bi-plus"></i> New Port
+            </button>
+            <div id="discharging-port-table"></div>
+        </div>
+        </div>
+
+        <!-- Pricing UOM -->
+        <div class="tab-pane fade" id="pricing-uom" role="tabpanel">
+        <div class="mt-3">
+            <h4>Pricing UOM</h4>
+            <button class="btn btn-primary mb-3" data-action="create-pricing-uom">
+            <i class="bi bi-plus"></i> New Pricing UOM
+            </button>
+            <div id="pricing-uom-table"></div>
+        </div>
+        </div>
+
+        <!-- Internal BU -->
+        <div class="tab-pane fade" id="internal-bu" role="tabpanel">
+        <div class="mt-3">
+            <h4>Internal BU</h4>
+            <button class="btn btn-primary mb-3" data-action="create-internal-bu">
+            <i class="bi bi-plus"></i> New BU
+            </button>
+            <div id="internal-bu-table"></div>
+        </div>
+        </div>
+
+        <!-- API FIX Trade Capture -->
+        <div class="tab-pane fade" id="api-fix" role="tabpanel">
+        <div class="mt-3">
+            <h4>API FIX Trade Capture</h4>
+            <button class="btn btn-primary mb-3" data-action="create-api-fix">
+            <i class="bi bi-plus"></i> New Capture
+            </button>
+            <div id="api-fix-table"></div>
+        </div>
+        </div>
+
+        <!-- Portfolio -->
+        <div class="tab-pane fade" id="portfolio-master" role="tabpanel">
+        <div class="mt-3">
+            <h4>Portfolio</h4>
+            <button class="btn btn-primary mb-3" data-action="create-portfolio">
+            <i class="bi bi-plus"></i> New Portfolio
+            </button>
+            <div id="portfolio-table"></div>
+        </div>
+        </div>
+
+        <!-- Exchange -->
+        <div class="tab-pane fade" id="exchange" role="tabpanel">
+        <div class="mt-3">
+            <h4>Exchange</h4>
+            <button class="btn btn-primary mb-3" data-action="create-exchange">
+            <i class="bi bi-plus"></i> New Exchange
+            </button>
+            <div id="exchange-table"></div>
+        </div>
+        </div>
+
+        <!-- Currency -->
+        <div class="tab-pane fade" id="currency" role="tabpanel">
+        <div class="mt-3">
+            <h4>Currency</h4>
+            <button class="btn btn-primary mb-3" data-action="create-currency">
+            <i class="bi bi-plus"></i> New Currency
+            </button>
+            <div id="currency-table"></div>
+        </div>
+        </div>
+
             </div>
         </div>
 

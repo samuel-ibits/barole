@@ -3,9 +3,11 @@
  * Database Configuration
  * ETRM System - Database connection and configuration
  */
+require_once 'app.php';
 
 // Environment detection
-$isProduction = (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] !== 'localhost' && $_SERVER['HTTP_HOST'] !== '127.0.0.1'&& $_SERVER['HTTP_HOST'] !== 'barole.io');
+// $isProduction = (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] !== 'localhost' && $_SERVER['HTTP_HOST'] !== '127.0.0.1'&& $_SERVER['HTTP_HOST'] !== 'barole.io');
+$isProduction = (APP_ENV === 'production');
 
 if ($isProduction) {
     // Production Database Configuration (MySQL for cPanel/hosting)
@@ -17,7 +19,7 @@ if ($isProduction) {
     define('DB_CHARSET', 'utf8mb4');
 } else {
     // Development Database Configuration (SQLite for local development)
-    define('DB_TYPE', 'sqlite');
+    define('DB_TYPE', 'mysql');
     define('DB_HOST', 'localhost');
     define('DB_NAME', 'etrm_system');
     define('DB_USER', 'root');
