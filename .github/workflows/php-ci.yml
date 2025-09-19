@@ -2,7 +2,7 @@ name: PHP CI/CD
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "staging" ]
   pull_request:
 
 jobs:
@@ -35,20 +35,21 @@ jobs:
   deploy:
     needs: build-test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging'
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Upload via FTP
+      - name: Deploy to Production (main)
+        if: github.ref == 'refs/heads/main'
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
-          server: ${{ secrets.D7_FTP_SERVER }}
+          server: ${{ secrets.D7_FTP_SERVER }} 
           username: ${{ secrets.D7_FTP_USER }}
           password: ${{ secrets.D7_FTP_PASSWORD }}
-          protocol: ftp          # or 'ftps' / 'sftp' depending on host
-          local-dir: ./          # directory in your repo to upload
+          protocol: ftp
+          local-dir: ./
           server-dir: /home/d7tech/barole.3d7tech.com/barole/
           exclude: |
             **/.git*
@@ -57,4 +58,19 @@ jobs:
             **/vendor/**
             composer.lock
 
-
+      - name: Deploy to Staging
+        if: github.ref == 'refs/heads/staging'
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.D7_FTP_SERVER }}
+          username: ${{ secrets.D7_FTP_USER }}
+          password: ${{ secrets.D7_STAGING_FTP_PASSWORD }}
+          protocol: ftp
+          local-dir: ./
+          server-dir: /home/d7tech/barole-staging.3d7tech.com/barole/
+          exclude: |
+            **/.git*
+            **/.github*
+            **/node_modules/**
+            **/vendor/**
+            composer.lock
