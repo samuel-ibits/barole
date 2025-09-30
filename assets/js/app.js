@@ -1095,6 +1095,27 @@ window.ETRM = {
         this.loadCounterparties();
     },
 
+    loadTable(containerId, url, columnFn, errorMessage = 'Failed to load data') {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        this.showLoading(container);
+
+        this.apiCall(url)
+            .then(data => {
+                if (data.success) {
+                    this.renderTable(container, data.data, columnFn());
+                } else {
+                    this.showError(container, errorMessage);
+                }
+            })
+            .catch(error => {
+                console.error(`${containerId} error:`, error);
+                this.showError(container, `Error loading ${containerId}`);
+            });
+        },
+
+
     loadCounterparties() {
         const container = document.getElementById('counterparties-table');
         if (!container) {
@@ -1595,13 +1616,197 @@ window.ETRM = {
                     { field: 'ip_address', title: 'IP Address' },
                     { field: 'created_at', title: 'Date', type: 'date' }
                 ];
+            },  
+            //new columns
+                        // Market Prices
+            getMarketPricesColumns() {
+                return [
+                    { field: 'id', title: 'ID' },
+                    { field: 'commodity', title: 'Commodity' },
+                    { field: 'price', title: 'Price', type: 'currency' },
+                    { field: 'currency', title: 'Currency' },
+                    { field: 'date', title: 'Date', type: 'date' }
+                ];
             },
+
+            // Contract Types
+            getContractTypesColumns() {
+                return [
+                    { field: 'id', title: 'ID' },
+                    { field: 'name', title: 'Contract Type' },
+                    { field: 'description', title: 'Description' },
+                    { field: 'status', title: 'Status', type: 'status' }
+                ];
+            },
+
+            // Commodities
+            getCommoditiesColumns() {
+                return [
+                    { field: 'id', title: 'ID' },
+                    { field: 'name', title: 'Commodity Name' },
+                    { field: 'category', title: 'Category' },
+                    { field: 'uom', title: 'Unit of Measure' },
+                    { field: 'status', title: 'Status', type: 'status' }
+                ];
+            },
+
+            // Product UOM
+            getProductUOMColumns() {
+                return [
+                    { field: 'id', title: 'ID' },
+                    { field: 'name', title: 'Unit Name' },
+                    { field: 'symbol', title: 'Symbol' },
+                    { field: 'description', title: 'Description' }
+                ];
+            },
+
+            // Pricing Units
+            getPricingUnitsColumns() {
+                return [
+                    { field: 'id', title: 'ID' },
+                    { field: 'name', title: 'Pricing Unit' },
+                    { field: 'description', title: 'Description' }
+                ];
+            },
+
+            // Pricing Formulas
+            getPricingFormulasColumns() {
+                return [
+                    { field: 'id', title: 'ID' },
+                    { field: 'formula_name', title: 'Formula Name' },
+                    { field: 'expression', title: 'Expression' },
+                    { field: 'description', title: 'Description' }
+                ];
+            },
+
+            // Market Indices
+            getMarketIndicesColumns() {
+                return [
+                    { field: 'id', title: 'ID' },
+                    { field: 'name', title: 'Index Name' },
+                    { field: 'value', title: 'Value', type: 'number' },
+                    { field: 'currency', title: 'Currency' },
+                    { field: 'date', title: 'Date', type: 'date' }
+                ];
+            },
+
+            // Payment Terms
+            getPaymentTermsColumns() {
+                return [
+                    { field: 'id', title: 'ID' },
+                    { field: 'term_name', title: 'Payment Term' },
+                    { field: 'days', title: 'Days', type: 'number' },
+                    { field: 'description', title: 'Description' }
+                ];
+            },
+
+            // Transfer Methods
+            getTransferMethodsColumns() {
+                return [
+                    { field: 'id', title: 'ID' },
+                    { field: 'method', title: 'Method' },
+                    { field: 'description', title: 'Description' }
+                ];
+            },
+
+            // Governing Bodies
+            getGoverningBodiesColumns() {
+                return [
+                    { field: 'id', title: 'ID' },
+                    { field: 'name', title: 'Governing Body' },
+                    { field: 'country', title: 'Country' },
+                    { field: 'status', title: 'Status', type: 'status' }
+                ];
+            },
+
+            // Load Profits
+            getLoadProfitsColumns() {
+                return [
+                    { field: 'id', title: 'ID' },
+                    { field: 'load_id', title: 'Load ID' },
+                    { field: 'profit', title: 'Profit', type: 'currency' },
+                    { field: 'currency', title: 'Currency' },
+                    { field: 'date', title: 'Date', type: 'date' }
+                ];
+            },
+
+            // Discharging Ports
+            getDischargingPortsColumns() {
+                return [
+                    { field: 'id', title: 'ID' },
+                    { field: 'name', title: 'Port Name' },
+                    { field: 'location', title: 'Location' },
+                    { field: 'country', title: 'Country' }
+                ];
+            },
+
+            // Pricing UOM
+            getPricingUOMColumns() {
+                return [
+                    { field: 'id', title: 'ID' },
+                    { field: 'name', title: 'Pricing UOM' },
+                    { field: 'symbol', title: 'Symbol' },
+                    { field: 'description', title: 'Description' }
+                ];
+            },
+
+            // Internal BUs
+            getInternalBUColumns() {
+                return [
+                    { field: 'id', title: 'ID' },
+                    { field: 'name', title: 'Business Unit' },
+                    { field: 'description', title: 'Description' },
+                    { field: 'status', title: 'Status', type: 'status' }
+                ];
+            },
+
+            // API FIX Trade Capture
+            getAPIFIXColumns() {
+                return [
+                    { field: 'id', title: 'ID' },
+                    { field: 'trade_ref', title: 'Trade Ref' },
+                    { field: 'status', title: 'Status', type: 'status' },
+                    { field: 'captured_at', title: 'Captured At', type: 'date' }
+                ];
+            },
+
+            // Portfolio
+            getPortfolioColumns() {
+                return [
+                    { field: 'id', title: 'ID' },
+                    { field: 'portfolio_name', title: 'Portfolio Name' },
+                    { field: 'manager', title: 'Manager' },
+                    { field: 'value', title: 'Value', type: 'currency' },
+                    { field: 'currency', title: 'Currency' }
+                ];
+            },
+
+            // Exchange
+            getExchangeColumns() {
+                return [
+                    { field: 'id', title: 'ID' },
+                    { field: 'name', title: 'Exchange' },
+                    { field: 'country', title: 'Country' },
+                    { field: 'currency', title: 'Currency' }
+                ];
+            },
+
+            // Currency
+            getCurrencyColumns() {
+                return [
+                    { field: 'id', title: 'ID' },
+                    { field: 'code', title: 'Currency Code' },
+                    { field: 'name', title: 'Currency Name' },
+                    { field: 'symbol', title: 'Symbol' }
+                ];
+            },
+
 
     // ===== CREATE/NEW RECORD METHODS =====
     handleCreateAction(action) {
         console.log(`➕ Handling create action: ${action}`);
         
-        switch (action) {
+            switch (action) {
             case 'create-physical-sale':
                 this.showCreateModal('Physical Sale', this.getPhysicalSaleForm(), 'trading/physical-sales.php');
                 break;
@@ -1647,9 +1852,67 @@ window.ETRM = {
             case 'create-permission':
                 this.showCreateModal('Permission', this.getPermissionForm(), 'users/permissions.php');
                 break;
+
+            // 🔽 New cases for your nav tabs
+            case 'create-market-price':
+                this.showCreateModal('Market Price', this.getMarketPriceForm(), 'master-data/market-prices.php');
+                break;
+            case 'create-contract-type':
+                this.showCreateModal('Contract Type', this.getContractTypeForm(), 'master-data/contract-types.php');
+                break;
+            case 'create-commodity':
+                this.showCreateModal('Commodity Name', this.getCommodityNameForm(), 'master-data/commodities.php');
+                break;
+            case 'create-product-uom':
+                this.showCreateModal('Product UOM', this.getProductUomForm(), 'master-data/product-uom.php');
+                break;
+            case 'create-pricing-unit':
+                this.showCreateModal('Pricing Unit', this.getPricingUnitForm(), 'master-data/pricing-units.php');
+                break;
+            case 'create-pricing-formula':
+                this.showCreateModal('Pricing Formula', this.getPricingFormulaForm(), 'master-data/pricing-formulas.php');
+                break;
+            case 'create-market-index':
+                this.showCreateModal('Market Index', this.getMarketIndexForm(), 'master-data/market-indices.php');
+                break;
+            case 'create-payment-term':
+                this.showCreateModal('Payment Term', this.getPaymentTermForm(), 'master-data/payment-terms.php');
+                break;
+            case 'create-transfer-method':
+                this.showCreateModal('Transfer Method', this.getTransferMethodForm(), 'master-data/transfer-methods.php');
+                break;
+            case 'create-governing-body':
+                this.showCreateModal('Governing Body', this.getGoverningBodyForm(), 'master-data/governing-bodies.php');
+                break;
+            case 'create-load-profit':
+                this.showCreateModal('Load Profit', this.getLoadProfitForm(), 'master-data/load-profits.php');
+                break;
+            case 'create-discharging-port':
+                this.showCreateModal('Discharging Port', this.getDischargingPortForm(), 'master-data/discharging-ports.php');
+                break;
+            case 'create-pricing-uom':
+                this.showCreateModal('Pricing UOM', this.getPricingUOMForm(), 'master-data/pricing-uom.php');
+                break;
+            case 'create-internal-bu':
+                this.showCreateModal('Internal BU', this.getInternalBUForm(), 'master-data/internal-bu.php');
+                break;
+            case 'create-api-fix':
+                this.showCreateModal('API FIX Trade Capture', this.getAPIFIXForm(), 'master-data/api-fix.php');
+                break;
+            case 'create-portfolio':
+                this.showCreateModal('Portfolio', this.getPortfolioForm(), 'master-data/portfolio.php');
+                break;
+            case 'create-exchange':
+                this.showCreateModal('Exchange', this.getExchangeForm(), 'master-data/exchanges.php');
+                break;
+            case 'create-currency':
+                this.showCreateModal('Currency', this.getCurrencyForm(), 'master-data/currencies.php');
+                break;
+
             default:
                 console.warn(`Unknown create action: ${action}`);
         }
+
     },
 
     showCreateModal(title, formHtml, apiEndpoint) {
@@ -3242,6 +3505,250 @@ window.ETRM = {
             </div>
         `;
     },
+
+//new forms
+// Example form generators for each tab
+
+getMarketPriceForm() {
+    return `
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="number" class="form-control" id="market_price" name="market_price" placeholder="Market Price" required>
+                    <label for="market_price">Market Price</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="date" class="form-control" id="effective_date" name="effective_date" required>
+                    <label for="effective_date">Effective Date</label>
+                </div>
+            </div>
+        </div>
+    `;
+},
+
+getContractTypeForm() {
+    return `
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="contract_type" name="contract_type" placeholder="Contract Type" required>
+                    <label for="contract_type">Contract Type</label>
+                </div>
+            </div>
+        </div>
+    `;
+},
+
+getCommodityNameForm() {
+    return `
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="commodity_name" name="commodity_name" placeholder="Commodity Name" required>
+                    <label for="commodity_name">Commodity Name</label>
+                </div>
+            </div>
+        </div>
+    `;
+},
+
+getProductUomForm() {
+    return `
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="product_uom" name="product_uom" placeholder="Unit of Measure" required>
+                    <label for="product_uom">Product UOM</label>
+                </div>
+            </div>
+        </div>
+    `;
+},
+
+getPricingUnitForm() {
+    return `
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="pricing_unit" name="pricing_unit" placeholder="Pricing Unit" required>
+                    <label for="pricing_unit">Pricing Unit</label>
+                </div>
+            </div>
+        </div>
+    `;
+},
+
+getPricingFormulaForm() {
+    return `
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-floating mb-3">
+                    <textarea class="form-control" id="pricing_formula" name="pricing_formula" placeholder="Formula" style="height:100px" required></textarea>
+                    <label for="pricing_formula">Pricing Formula</label>
+                </div>
+            </div>
+        </div>
+    `;
+},
+
+getMarketIndexForm() {
+    return `
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="market_index" name="market_index" placeholder="Market Index" required>
+                    <label for="market_index">Market Index</label>
+                </div>
+            </div>
+        </div>
+    `;
+},
+
+getPaymentTermsForm() {
+    return `
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-floating mb-3">
+                    <textarea class="form-control" id="payment_terms" name="payment_terms" placeholder="Payment Terms" style="height:100px" required></textarea>
+                    <label for="payment_terms">Payment Terms</label>
+                </div>
+            </div>
+        </div>
+    `;
+},
+
+getTransferMethodForm() {
+    return `
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="transfer_method" name="transfer_method" placeholder="Transfer Method" required>
+                    <label for="transfer_method">Transfer Method</label>
+                </div>
+            </div>
+        </div>
+    `;
+},
+
+getGoverningBodyForm() {
+    return `
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="governing_body" name="governing_body" placeholder="Governing Body" required>
+                    <label for="governing_body">Governing Body</label>
+                </div>
+            </div>
+        </div>
+    `;
+},
+
+getLoadProfitForm() {
+    return `
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-floating mb-3">
+                    <input type="number" class="form-control" id="load_profit" name="load_profit" placeholder="Load Profit %" required>
+                    <label for="load_profit">Load Profit (%)</label>
+                </div>
+            </div>
+        </div>
+    `;
+},
+
+getDischargingPortForm() {
+    return `
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="discharging_port" name="discharging_port" placeholder="Discharging Port" required>
+                    <label for="discharging_port">Discharging Port</label>
+                </div>
+            </div>
+        </div>
+    `;
+},
+
+getPricingUomForm() {
+    return `
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="pricing_uom" name="pricing_uom" placeholder="Pricing UOM" required>
+                    <label for="pricing_uom">Pricing UOM</label>
+                </div>
+            </div>
+        </div>
+    `;
+},
+
+getInternalBuForm() {
+    return `
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="internal_bu" name="internal_bu" placeholder="Internal Business Unit" required>
+                    <label for="internal_bu">Internal BU</label>
+                </div>
+            </div>
+        </div>
+    `;
+},
+
+getApiFixForm() {
+    return `
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="api_fix" name="api_fix" placeholder="API FIX Details" required>
+                    <label for="api_fix">API FIX Trade Capture</label>
+                </div>
+            </div>
+        </div>
+    `;
+},
+
+getPortfolioMasterForm() {
+    return `
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="portfolio" name="portfolio" placeholder="Portfolio Name" required>
+                    <label for="portfolio">Portfolio</label>
+                </div>
+            </div>
+        </div>
+    `;
+},
+
+getExchangeForm() {
+    return `
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="exchange" name="exchange" placeholder="Exchange Name" required>
+                    <label for="exchange">Exchange</label>
+                </div>
+            </div>
+        </div>
+    `;
+},
+
+getCurrencyForm() {
+    return `
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="currency" name="currency" placeholder="Currency" required>
+                    <label for="currency">Currency</label>
+                </div>
+            </div>
+        </div>
+    `;
+},
+
 
     // ===== UTILITY METHODS =====
     apiCall(endpoint) {

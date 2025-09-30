@@ -325,3 +325,11 @@ Stack trace:
 Stack trace:
 #0 {main}
   thrown in C:\laragon\www\barole\api\risk-analytics\alerts.php on line 11
+[27-Sep-2025 16:41:17 UTC] Database query failed: SQLSTATE[HY093]: Invalid parameter number: mixed named and positional parameters SQL: UPDATE users SET last_login = :last_login WHERE id = ?
+[27-Sep-2025 16:41:17 UTC] Failed to update last login: Database query failed
+[27-Sep-2025 20:16:46 UTC] Database query failed: SQLSTATE[HY093]: Invalid parameter number: mixed named and positional parameters SQL: UPDATE users SET last_login = :last_login WHERE id = ?
+[27-Sep-2025 20:16:46 UTC] Failed to update last login: Database query failed
+[29-Sep-2025 20:57:48 UTC] Database query failed: SQLSTATE[HY093]: Invalid parameter number: mixed named and positional parameters SQL: UPDATE users SET last_login = :last_login WHERE id = ?
+[29-Sep-2025 20:57:48 UTC] Failed to update last login: Database query failed
+[30-Sep-2025 01:12:35 UTC] Database query failed: SQLSTATE[HY093]: Invalid parameter number: mixed named and positional parameters SQL: UPDATE users SET last_login = :last_login WHERE id = ?
+[30-Sep-2025 01:12:35 UTC] Failed to update last login: Database query failed
