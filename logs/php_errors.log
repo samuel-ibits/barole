@@ -333,3 +333,95 @@ Stack trace:
 [29-Sep-2025 20:57:48 UTC] Failed to update last login: Database query failed
 [30-Sep-2025 01:12:35 UTC] Database query failed: SQLSTATE[HY093]: Invalid parameter number: mixed named and positional parameters SQL: UPDATE users SET last_login = :last_login WHERE id = ?
 [30-Sep-2025 01:12:35 UTC] Failed to update last login: Database query failed
+[30-Sep-2025 09:22:55 UTC] Database query failed: SQLSTATE[HY093]: Invalid parameter number: mixed named and positional parameters SQL: UPDATE users SET last_login = :last_login WHERE id = ?
+[30-Sep-2025 09:22:55 UTC] Failed to update last login: Database query failed
+[30-Sep-2025 10:26:01 UTC] Database query failed: SQLSTATE[HY093]: Invalid parameter number: mixed named and positional parameters SQL: UPDATE users SET last_login = :last_login WHERE id = ?
+[30-Sep-2025 10:26:01 UTC] Failed to update last login: Database query failed
+[30-Sep-2025 10:55:04 UTC] Database query failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'department' in 'field list' SQL: 
+        SELECT 
+            id, username, email, full_name, role, status, 
+            department, created_at, last_login
+        FROM users 
+        
+        ORDER BY 
+            CASE role
+                WHEN 'admin' THEN 1
+                WHEN 'manager' THEN 2
+                WHEN 'trader' THEN 3
+                WHEN 'analyst' THEN 4
+                WHEN 'viewer' THEN 5
+                ELSE 6
+            END,
+            username
+        LIMIT ? OFFSET ?
+    
+[30-Sep-2025 10:55:04 UTC] Error in users/list_simple.php: Database query failed
+[30-Sep-2025 10:55:06 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function requireAuth() in C:\laragon\www\barole\api\users\permissions.php:5
+Stack trace:
+#0 {main}
+  thrown in C:\laragon\www\barole\api\users\permissions.php on line 5
+[30-Sep-2025 10:55:08 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function requireAuth() in C:\laragon\www\barole\api\users\roles.php:5
+Stack trace:
+#0 {main}
+  thrown in C:\laragon\www\barole\api\users\roles.php on line 5
+[30-Sep-2025 10:55:09 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function requireAuth() in C:\laragon\www\barole\api\users\activity.php:5
+Stack trace:
+#0 {main}
+  thrown in C:\laragon\www\barole\api\users\activity.php on line 5
+[30-Sep-2025 10:55:10 UTC] Database query failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'department' in 'field list' SQL: 
+        SELECT 
+            id, username, email, full_name, role, status, 
+            department, created_at, last_login
+        FROM users 
+        
+        ORDER BY 
+            CASE role
+                WHEN 'admin' THEN 1
+                WHEN 'manager' THEN 2
+                WHEN 'trader' THEN 3
+                WHEN 'analyst' THEN 4
+                WHEN 'viewer' THEN 5
+                ELSE 6
+            END,
+            username
+        LIMIT ? OFFSET ?
+    
+[30-Sep-2025 10:55:10 UTC] Error in users/list_simple.php: Database query failed
+[30-Sep-2025 10:55:19 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function requireAuth() in C:\laragon\www\barole\api\risk-analytics\alerts.php:11
+Stack trace:
+#0 {main}
+  thrown in C:\laragon\www\barole\api\risk-analytics\alerts.php on line 11
+[30-Sep-2025 10:55:20 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function requireAuth() in C:\laragon\www\barole\api\risk-analytics\portfolio.php:11
+Stack trace:
+#0 {main}
+  thrown in C:\laragon\www\barole\api\risk-analytics\portfolio.php on line 11
+[30-Sep-2025 10:55:21 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function requireAuth() in C:\laragon\www\barole\api\risk-analytics\alerts.php:11
+Stack trace:
+#0 {main}
+  thrown in C:\laragon\www\barole\api\risk-analytics\alerts.php on line 11
+[30-Sep-2025 10:55:22 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function requireAuth() in C:\laragon\www\barole\api\reports\recent.php:11
+Stack trace:
+#0 {main}
+  thrown in C:\laragon\www\barole\api\reports\recent.php on line 11
+[30-Sep-2025 10:55:29 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function requireAuth() in C:\laragon\www\barole\api\risk-analytics\portfolio.php:11
+Stack trace:
+#0 {main}
+  thrown in C:\laragon\www\barole\api\risk-analytics\portfolio.php on line 11
+[30-Sep-2025 10:55:42 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function requireAuth() in C:\laragon\www\barole\api\risk-analytics\portfolio.php:11
+Stack trace:
+#0 {main}
+  thrown in C:\laragon\www\barole\api\risk-analytics\portfolio.php on line 11
+[30-Sep-2025 10:55:43 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function requireAuth() in C:\laragon\www\barole\api\risk-analytics\alerts.php:11
+Stack trace:
+#0 {main}
+  thrown in C:\laragon\www\barole\api\risk-analytics\alerts.php on line 11
+[30-Sep-2025 11:06:07 UTC] Database query failed: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'table_name}' at line 1 SQL: SELECT COUNT(*) as total FROM {table_name} 
+[30-Sep-2025 11:06:07 UTC] {table_name} API error: Database query failed
+[30-Sep-2025 11:06:43 UTC] Database query failed: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'table_name}' at line 1 SQL: SELECT COUNT(*) as total FROM {table_name} 
+[30-Sep-2025 11:06:43 UTC] {table_name} API error: Database query failed
+[30-Sep-2025 11:06:53 UTC] Database query failed: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'table_name}' at line 1 SQL: SELECT COUNT(*) as total FROM {table_name} 
+[30-Sep-2025 11:06:53 UTC] {table_name} API error: Database query failed
+[30-Sep-2025 11:08:40 UTC] Database query failed: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'table_name}' at line 1 SQL: SELECT COUNT(*) as total FROM {table_name} 
+[30-Sep-2025 11:08:40 UTC] {table_name} API error: Database query failed
+[30-Sep-2025 11:19:13 UTC] Database query failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'name' in 'field list' SQL: INSERT INTO market_index (name) VALUES (:name)
+[30-Sep-2025 11:19:13 UTC] market_index API error: Database query failed

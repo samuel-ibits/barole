@@ -253,8 +253,150 @@ window.ETRM = {
             case 'activity':
                 this.loadActivity();
                 break;
-        }
-    },
+            // load new sub-tabs here
+            case 'fx-trades':
+                this.loadTable('fx-trades-table', '/trading/fx-trades.php', this.getFXTradesColumns, 'Failed to load FX trades');
+                break;
+            case 'physical-sales':
+                this.loadTable('physical-sales-table', '/trading/physical-sales.php', this.getPhysicalSalesColumns, 'Failed to load physical sales');
+                break;
+            case 'financial-trades':
+                this.loadTable('financial-trades-table', '/trading/financial-trades.php', this.getFinancialTradesColumns, 'Failed to load financial trades');
+                break;
+
+            // Operations
+            case 'invoices':
+                this.loadTable('invoices-table', '/operations/invoices.php', this.getInvoicesColumns, 'Failed to load invoices');
+                break;
+            case 'settlements':
+                this.loadTable('settlements-table', '/operations/settlements.php', this.getSettlementsColumns, 'Failed to load settlements');
+                break;
+            case 'logistics':
+                this.loadTable('logistics-table', '/operations/logistics.php', this.getLogisticsColumns, 'Failed to load logistics');
+                break;
+
+            // Master Data
+            case 'counterparties':
+                this.loadTable('counterparties-table', '/master-data/counterparties.php', this.getCounterpartiesColumns, 'Failed to load counterparties');
+                break;
+            case 'products':
+                this.loadTable('products-table', '/master-data/products.php', this.getProductsColumns, 'Failed to load products');
+                break;
+            case 'business-units':
+                this.loadTable('business-units-table', '/master-data/business-units.php', this.getBusinessUnitsColumns, 'Failed to load business units');
+                break;
+            case 'brokers':
+                this.loadTable('brokers-table', '/master-data/brokers.php', this.getBrokersColumns, 'Failed to load brokers');
+                break;
+            case 'ports':
+                this.loadTable('ports-table', '/master-data/ports.php', this.getPortsColumns, 'Failed to load ports');
+                break;
+            case 'carriers':
+                this.loadTable('carriers-table', '/master-data/carriers.php', this.getCarriersColumns, 'Failed to load carriers');
+                break;
+            case 'contract-types':
+                this.loadTable('contract-types-table', '/master-data/contract-types.php', this.getContractTypesColumns, 'Failed to load contract types');
+                break;
+            case 'commodity-names':
+                this.loadTable('commodity-names-table', '/master-data/commodity-names.php', this.getCommodityNamesColumns, 'Failed to load commodity names');
+                break;
+            case 'product-uom':
+                this.loadTable('product-uom-table', '/master-data/product-uom.php', this.getProductUOMColumns, 'Failed to load product UOM');
+                break;
+            case 'pricing-units':
+                this.loadTable('pricing-units-table', '/master-data/pricing-units.php', this.getPricingUnitsColumns, 'Failed to load pricing units');
+                break;
+            case 'pricing-formulas':
+                this.loadTable('pricing-formulas-table', '/master-data/pricing-formulas.php', this.getPricingFormulasColumns, 'Failed to load pricing formulas');
+                break;
+            case 'market-index':
+                this.loadTable('market-index-table', '/master-data/market-index.php', this.getMarketIndexColumns, 'Failed to load market index');
+                break;
+            case 'payment-terms':
+                this.loadTable('payment-terms-table', '/master-data/payment-terms.php', this.getPaymentTermsColumns, 'Failed to load payment terms');
+                break;
+            case 'transfer-methods':
+                this.loadTable('transfer-methods-table', '/master-data/transfer-methods.php', this.getTransferMethodsColumns, 'Failed to load transfer methods');
+                break;
+            case 'governing-bodies':
+                this.loadTable('governing-bodies-table', '/master-data/governing-bodies.php', this.getGoverningBodiesColumns, 'Failed to load governing bodies');
+                break;
+            case 'load-profits':
+                this.loadTable('load-profits-table', '/master-data/load-profits.php', this.getLoadProfitsColumns, 'Failed to load load profits');
+                break;
+            case 'discharging-ports':
+                this.loadTable('discharging-ports-table', '/master-data/discharging-ports.php', this.getDischargingPortsColumns, 'Failed to load discharging ports');
+                break;
+            case 'pricing-uom':
+                this.loadTable('pricing-uom-table', '/master-data/pricing-uom.php', this.getPricingUOMColumns, 'Failed to load pricing UOM');
+                break;
+            case 'internal-bu':
+                this.loadTable('internal-bu-table', '/master-data/internal-bu.php', this.getInternalBUColumns, 'Failed to load internal business units');
+                break;
+            case 'portfolio-master':
+                this.loadTable('portfolio-master-table', '/master-data/portfolio-master.php', this.getPortfolioMasterColumns, 'Failed to load portfolio master');
+                break;
+            case 'exchange':
+                this.loadTable('exchange-table', '/master-data/exchange.php', this.getExchangeColumns, 'Failed to load exchange');
+                break;
+            case 'currency':
+                this.loadTable('currency-table', '/master-data/currency.php', this.getCurrencyColumns, 'Failed to load currency');
+                break;
+
+            // Users & Security
+            case 'users':
+                this.loadTable('users-table', '/users/list.php', this.getUsersColumns, 'Failed to load users');
+                break;
+            case 'roles':
+                this.loadTable('roles-table', '/users/roles.php', this.getRolesColumns, 'Failed to load roles');
+                break;
+            case 'permissions':
+                this.loadTable('permissions-table', '/users/permissions.php', this.getPermissionsColumns, 'Failed to load permissions');
+                break;
+            case 'activity':
+                this.loadTable('activity-table', '/users/activity.php', this.getActivityColumns, 'Failed to load activity');
+                break;
+            case 'market-prices': 
+                this.loadTable('market-prices-table', '/data/market_prices.php', this.getMarketPricesColumns, 'Failed to load market prices'); 
+                 break; 
+            case 'commodity_names':     
+                this.loadTable('commodity-names-table', '/data/commodity_names.php', this.getCommodityNamesColumns, 'Failed to load commodity names');
+                break; 
+            case 'contract_types': 
+                this.loadTable('contract-types-table', '/data/contract_types.php', this.getContractTypesColumns, 'Failed to load contract types');
+                break; 
+            case 'pricing_units': 
+                this.loadTable('pricing-units-table', '/data/pricing_units.php', this.getPricingUnitsColumns, 'Failed to load pricing units'); 
+                break; 
+            case 'pricing_formulas': 
+                this.loadTable('pricing-formulas-table', '/data/pricing_formulas.php', this.getPricingFormulasColumns, 'Failed to load pricing formulas'); 
+                break; 
+            case 'transfer_methods': 
+                this.loadTable('transfer-methods-table', '/data/transfer_methods.php', this.getTransferMethodsColumns, 'Failed to load transfer methods'); 
+                break; 
+            case 'governing_bodies': 
+                this.loadTable('governing-bodies-table', '/data/governing_bodies.php', this.getGoverningBodiesColumns, 'Failed to load governing bodies'); 
+                break; 
+            case 'load_profits': 
+                this.loadTable('load-profits-table', '/data/load_profits.php', this.getLoadProfitsColumns, 'Failed to load load profits'); 
+                break; 
+            case 'discharging_ports': 
+                this.loadTable('discharging-ports-table', '/data/discharging_ports.php', this.getDischargingPortsColumns, 'Failed to load discharging ports'); 
+                break; 
+            case 'portfolio_master': 
+                this.loadTable('portfolio-master-table', '/data/portfolio_master.php', this.getPortfolioMasterColumns, 'Failed to load portfolios'); 
+                break;
+            // Integrations
+            case 'api-fix':
+                this.loadTable('api-fix-table', '/integrations/api-fix.php', this.getApiFixColumns, 'Failed to load API FIX');
+                break;
+
+            default:
+                console.warn(`Unknown table type: ${cleanId}`);
+        
+
+            }
+        },
 
     // Clear saved tab state (utility method)
     clearTabState() {
@@ -1095,25 +1237,25 @@ window.ETRM = {
         this.loadCounterparties();
     },
 
-    loadTable(containerId, url, columnFn, errorMessage = 'Failed to load data') {
-        const container = document.getElementById(containerId);
-        if (!container) return;
+        loadTable(containerId, url, columnFn, errorMessage = 'Failed to load data') {
+            const container = document.getElementById(containerId);
+            if (!container) return;
 
-        this.showLoading(container);
+            this.showLoading(container);
 
-        this.apiCall(url)
-            .then(data => {
-                if (data.success) {
-                    this.renderTable(container, data.data, columnFn());
-                } else {
-                    this.showError(container, errorMessage);
-                }
-            })
-            .catch(error => {
-                console.error(`${containerId} error:`, error);
-                this.showError(container, `Error loading ${containerId}`);
-            });
-        },
+            this.apiCall(url)
+                .then(data => {
+                    if (data.success) {
+                        this.renderTable(container, data.data, columnFn());
+                    } else {
+                        this.showError(container, errorMessage);
+                    }
+                })
+                .catch(error => {
+                    console.error(`${containerId} error:`, error);
+                    this.showError(container, `Error loading ${containerId}`);
+                });
+            },
 
 
     loadCounterparties() {
@@ -1873,10 +2015,10 @@ window.ETRM = {
                 this.showCreateModal('Pricing Formula', this.getPricingFormulaForm(), 'master-data/pricing-formulas.php');
                 break;
             case 'create-market-index':
-                this.showCreateModal('Market Index', this.getMarketIndexForm(), 'master-data/market-indices.php');
+                this.showCreateModal('Market Index', this.getMarketIndexForm(), 'master-data/market-index.php');
                 break;
             case 'create-payment-term':
-                this.showCreateModal('Payment Term', this.getPaymentTermForm(), 'master-data/payment-terms.php');
+                this.showCreateModal('Payment Term', this.getPaymentTermsForm(), 'master-data/payment-terms.php');
                 break;
             case 'create-transfer-method':
                 this.showCreateModal('Transfer Method', this.getTransferMethodForm(), 'master-data/transfer-methods.php');
@@ -3511,17 +3653,31 @@ window.ETRM = {
 
 getMarketPriceForm() {
     return `
-        <div class="row">
+          <div class="row">
             <div class="col-md-6">
                 <div class="form-floating mb-3">
-                    <input type="number" class="form-control" id="market_price" name="market_price" placeholder="Market Price" required>
-                    <label for="market_price">Market Price</label>
+                    <input type="text" class="form-control" id="market_index" name="market_index" placeholder="Market Index" required>
+                    <label for="market_index">Market Index</label>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-floating mb-3">
-                    <input type="date" class="form-control" id="effective_date" name="effective_date" required>
-                    <label for="effective_date">Effective Date</label>
+                    <input type="date" class="form-control" id="closing_date" name="closing_date" required>
+                    <label for="closing_date">Closing Date</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="date" class="form-control" id="expiry_date" name="expiry_date" required>
+                    <label for="expiry_date">Expiry Date</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="number" class="form-control" id="closing_price" name="closing_price" placeholder="Closing Price" required>
+                    <label for="closing_price">Closing Price</label>
                 </div>
             </div>
         </div>
@@ -3583,10 +3739,16 @@ getPricingUnitForm() {
 getPricingFormulaForm() {
     return `
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6">
                 <div class="form-floating mb-3">
-                    <textarea class="form-control" id="pricing_formula" name="pricing_formula" placeholder="Formula" style="height:100px" required></textarea>
-                    <label for="pricing_formula">Pricing Formula</label>
+                    <input type="text" class="form-control" id="formula_name" name="formula_name" placeholder="Formula Name" required>
+                    <label for="formula_name">Formula Name</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <textarea class="form-control" id="formula_details" name="formula_details" placeholder="Formula Details" style="height:100px" required></textarea>
+                    <label for="formula_details">Formula Details</label>
                 </div>
             </div>
         </div>
@@ -3596,10 +3758,30 @@ getPricingFormulaForm() {
 getMarketIndexForm() {
     return `
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6">
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="market_index" name="market_index" placeholder="Market Index" required>
-                    <label for="market_index">Market Index</label>
+                    <input type="text" class="form-control" id="index_name" name="index_name" placeholder="Index Name" required>
+                    <label for="index_name">Index Name</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="index_uom" name="index_uom" placeholder="Index UoM" required>
+                    <label for="index_uom">Index UoM</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="exchange" name="exchange" placeholder="Exchange" required>
+                    <label for="exchange">Exchange</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="date" class="form-control" id="expiry_date" name="expiry_date" placeholder="Expiry Date" required>
+                    <label for="expiry_date">Expiry Date</label>
                 </div>
             </div>
         </div>
@@ -3609,10 +3791,16 @@ getMarketIndexForm() {
 getPaymentTermsForm() {
     return `
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6">
                 <div class="form-floating mb-3">
-                    <textarea class="form-control" id="payment_terms" name="payment_terms" placeholder="Payment Terms" style="height:100px" required></textarea>
-                    <label for="payment_terms">Payment Terms</label>
+                    <input type="text" class="form-control" id="payment_term_title" name="payment_term_title" placeholder="Payment Term Title" required>
+                    <label for="payment_term_title">Payment Term Title</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <textarea class="form-control" id="payment_terms_description" name="payment_terms_description" placeholder="Payment Terms Described / Elaborated" style="height:100px" required></textarea>
+                    <label for="payment_terms_description">Payment Terms Described / Elaborated</label>
                 </div>
             </div>
         </div>
