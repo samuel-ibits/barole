@@ -1,8 +1,7 @@
-```php
 <?php
 /**
  * Generic CRUD API Template
- * Replace {table_name}, {singular}, and column mappings
+ * Replace pricing_uom, {singular}, and column mappings
  */
 
 // Load session management
@@ -32,7 +31,7 @@ try {
     }
 
 } catch (Exception $e) {
-    error_log("{table_name} API error: " . $e->getMessage());
+    error_log("pricing_uom API error: " . $e->getMessage());
     sendErrorResponse('Failed to process request: ' . $e->getMessage());
 }
 
@@ -52,9 +51,9 @@ function handleGet($db) {
         $params[] = '%' . $search . '%';
     }
 
-    $total = $db->query("SELECT COUNT(*) as total FROM {table_name} {$where}", $params)->fetch()['total'];
+    $total = $db->query("SELECT COUNT(*) as total FROM pricing_uom {$where}", $params)->fetch()['total'];
 
-    $sql = "SELECT * FROM {table_name} {$where} ORDER BY id DESC LIMIT ? OFFSET ?";
+    $sql = "SELECT * FROM pricing_uom {$where} ORDER BY id DESC LIMIT ? OFFSET ?";
     $params[] = $limit;
     $params[] = $offset;
     $rows = $db->query($sql, $params)->fetchAll();
@@ -81,7 +80,7 @@ function handleCreate($db) {
         return;
     }
 
-    $newId = $db->insert('{table_name}', ['name' => $name]);
+    $newId = $db->insert('pricing_uom', ['name' => $name]);
     if ($newId) {
         logUserActivity('create_{singular}', "Created {singular}: {$name}");
         sendSuccessResponse(['id' => $newId], '{singular} created successfully');
@@ -103,7 +102,7 @@ function handleUpdate($db) {
         return;
     }
 
-    $updated = $db->query("UPDATE {table_name} SET name = ? WHERE id = ?", [$name, $id]);
+    $updated = $db->query("UPDATE pricing_uom SET name = ? WHERE id = ?", [$name, $id]);
     if ($updated->rowCount() > 0) {
         logUserActivity('update_{singular}', "Updated {singular}: {$id}");
         sendSuccessResponse(['id' => $id], '{singular} updated successfully');
@@ -124,7 +123,7 @@ function handleDelete($db) {
         return;
     }
 
-    $deleted = $db->query("DELETE FROM {table_name} WHERE id = ?", [$id]);
+    $deleted = $db->query("DELETE FROM pricing_uom WHERE id = ?", [$id]);
     if ($deleted->rowCount() > 0) {
         logUserActivity('delete_{singular}', "Deleted {singular}: {$id}");
         sendSuccessResponse(null, '{singular} deleted successfully');
@@ -133,4 +132,3 @@ function handleDelete($db) {
     }
 }
 ?>
-```

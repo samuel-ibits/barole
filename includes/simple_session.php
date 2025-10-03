@@ -148,8 +148,8 @@ function logUserActivity($action, $details = '') {
  * Send JSON response helper
  */
 function sendJSONResponse($data, $statusCode = 200) {
+    header('Content-Type: application/json; charset=utf-8');
     http_response_code($statusCode);
-    header('Content-Type: application/json');
     echo json_encode($data);
     exit;
 }

@@ -1,4 +1,4 @@
-```php
+
 <?php
 /**
  * Market Index API
@@ -65,8 +65,7 @@ function handleGet($db) {
     $params[] = $offset;
 
     $rows = $db->query($sql, $params)->fetchAll();
-
-    sendJSONResponse([
+    $data=[
         'success' => true,
         'data' => $rows,
         'pagination' => [
@@ -75,7 +74,8 @@ function handleGet($db) {
             'total' => $total,
             'total_pages' => ceil($total / $limit)
         ]
-    ]);
+    ];
+    sendJSONResponse($data);
 }
 
 /**
@@ -177,4 +177,3 @@ function handleDelete($db) {
     }
 }
 ?>
-```

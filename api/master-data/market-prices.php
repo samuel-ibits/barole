@@ -1,11 +1,8 @@
-```php
 <?php
 /**
- * Generic CRUD API Template
- * Replace {table_name}, {singular}, and column mappings
+ * CRUD API for market_prices
  */
 
-// Load session management
 require_once __DIR__ . '/../../includes/simple_session.php';
 requireLogin();
 
@@ -32,7 +29,7 @@ try {
     }
 
 } catch (Exception $e) {
-    error_log("{table_name} API error: " . $e->getMessage());
+    error_log("market_prices API error: " . $e->getMessage());
     sendErrorResponse('Failed to process request: ' . $e->getMessage());
 }
 
@@ -43,18 +40,19 @@ function handleGet($db) {
     $page = max(1, (int)($_GET['page'] ?? 1));
     $limit = max(1, min(100, (int)($_GET['limit'] ?? 25)));
     $offset = ($page - 1) * $limit;
-    $search = trim($_GET['search'] ?? '');
 
     $where = '';
     $params = [];
-    if ($search !== '') {
-        $where = "WHERE name LIKE ?";
-        $params[] = '%' . $search . '%';
+    if (!empty($_GET['search'])) {
+        $where = "WHERE market_index_id LIKE ?";
+        $params[] = '%' . trim($_GET['search']) . '%';
     }
 
-    $total = $db->query("SELECT COUNT(*) as total FROM {table_name} {$where}", $params)->fetch()['total'];
+    $total = $db->query("SELECT COUNT(*) as total FROM market_prices {$where}", $params)->fetch()['total'];
 
-    $sql = "SELECT * FROM {table_name} {$where} ORDER BY id DESC LIMIT ? OFFSET ?";
+    $sql = "SELECT id, market_index_id, closing_date, expiry_date, closing_price
+            FROM market_prices {$where} 
+            ORDER BY id DESC LIMIT ? OFFSET ?";
     $params[] = $limit;
     $params[] = $offset;
     $rows = $db->query($sql, $params)->fetchAll();
@@ -75,18 +73,28 @@ function handleGet($db) {
  * Handle POST - create
  */
 function handleCreate($db) {
-    $name = trim($_POST['name'] ?? '');
-    if ($name === '') {
-        sendErrorResponse('Name is required');
+    $market_index_id = trim($_POST['market_index'] ?? '');
+    $closing_date    = trim($_POST['closing_date'] ?? '');
+    $expiry_date     = trim($_POST['expiry_date'] ?? '');
+    $closing_price   = trim($_POST['closing_price'] ?? '');
+
+    if ($market_index_id === '' || $closing_date === '' || $expiry_date === '' || $closing_price === '') {
+        sendErrorResponse('All fields are required');
         return;
     }
 
-    $newId = $db->insert('{table_name}', ['name' => $name]);
+    $newId = $db->insert('market_prices', [
+        'market_index_id' => $market_index_id,
+        'closing_date'    => $closing_date,
+        'expiry_date'     => $expiry_date,
+        'closing_price'   => $closing_price
+    ]);
+
     if ($newId) {
-        logUserActivity('create_{singular}', "Created {singular}: {$name}");
-        sendSuccessResponse(['id' => $newId], '{singular} created successfully');
+        logUserActivity('create_market_price', "Created market_price ID: {$newId}");
+        sendSuccessResponse(['id' => $newId], 'Market price created successfully');
     } else {
-        sendErrorResponse('Failed to create {singular}');
+        sendErrorResponse('Failed to create market price');
     }
 }
 
@@ -95,20 +103,29 @@ function handleCreate($db) {
  */
 function handleUpdate($db) {
     $input = json_decode(file_get_contents('php://input'), true);
-    $id = (int)($input['id'] ?? 0);
-    $name = trim($input['name'] ?? '');
+    $id             = (int)($input['id'] ?? 0);
+    $market_index_id= trim($input['market_index_id'] ?? '');
+    $closing_date   = trim($input['closing_date'] ?? '');
+    $expiry_date    = trim($input['expiry_date'] ?? '');
+    $closing_price  = trim($input['closing_price'] ?? '');
 
-    if ($id <= 0 || $name === '') {
-        sendErrorResponse('ID and Name are required');
+    if ($id <= 0 || $market_index_id === '' || $closing_date === '' || $expiry_date === '' || $closing_price === '') {
+        sendErrorResponse('ID and all fields are required');
         return;
     }
 
-    $updated = $db->query("UPDATE {table_name} SET name = ? WHERE id = ?", [$name, $id]);
+    $updated = $db->query(
+        "UPDATE market_prices 
+         SET market_index_id = ?, closing_date = ?, expiry_date = ?, closing_price = ? 
+         WHERE id = ?",
+        [$market_index_id, $closing_date, $expiry_date, $closing_price, $id]
+    );
+
     if ($updated->rowCount() > 0) {
-        logUserActivity('update_{singular}', "Updated {singular}: {$id}");
-        sendSuccessResponse(['id' => $id], '{singular} updated successfully');
+        logUserActivity('update_market_price', "Updated market_price ID: {$id}");
+        sendSuccessResponse(['id' => $id], 'Market price updated successfully');
     } else {
-        sendErrorResponse('Failed to update {singular}');
+        sendErrorResponse('Failed to update market price');
     }
 }
 
@@ -124,13 +141,12 @@ function handleDelete($db) {
         return;
     }
 
-    $deleted = $db->query("DELETE FROM {table_name} WHERE id = ?", [$id]);
+    $deleted = $db->query("DELETE FROM market_prices WHERE id = ?", [$id]);
     if ($deleted->rowCount() > 0) {
-        logUserActivity('delete_{singular}', "Deleted {singular}: {$id}");
-        sendSuccessResponse(null, '{singular} deleted successfully');
+        logUserActivity('delete_market_price', "Deleted market_price ID: {$id}");
+        sendSuccessResponse(null, 'Market price deleted successfully');
     } else {
-        sendErrorResponse('Failed to delete {singular}');
+        sendErrorResponse('Failed to delete market price');
     }
 }
 ?>
-```

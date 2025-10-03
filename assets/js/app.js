@@ -294,11 +294,11 @@ window.ETRM = {
             case 'carriers':
                 this.loadTable('carriers-table', '/master-data/carriers.php', this.getCarriersColumns, 'Failed to load carriers');
                 break;
-            case 'contract-types':
+            case 'contract-type':
                 this.loadTable('contract-types-table', '/master-data/contract-types.php', this.getContractTypesColumns, 'Failed to load contract types');
                 break;
-            case 'commodity-names':
-                this.loadTable('commodity-names-table', '/master-data/commodity-names.php', this.getCommodityNamesColumns, 'Failed to load commodity names');
+            case 'commodity-name':
+                this.loadTable('commodity-names-table', '/master-data/commodities.php', this.getCommoditiesColumns, 'Failed to load commodity names');
                 break;
             case 'product-uom':
                 this.loadTable('product-uom-table', '/master-data/product-uom.php', this.getProductUOMColumns, 'Failed to load product UOM');
@@ -313,10 +313,10 @@ window.ETRM = {
                 this.loadTable('market-index-table', '/master-data/market-index.php', this.getMarketIndexColumns, 'Failed to load market index');
                 break;
             case 'payment-terms':
-                this.loadTable('payment-terms-table', '/master-data/payment-terms.php', this.getPaymentTermsColumns, 'Failed to load payment terms');
+                this.loadTable('payment-term-table', '/master-data/payment-terms.php', this.getPaymentTermsColumns, 'Failed to load payment terms');
                 break;
-            case 'transfer-methods':
-                this.loadTable('transfer-methods-table', '/master-data/transfer-methods.php', this.getTransferMethodsColumns, 'Failed to load transfer methods');
+            case 'transfer-method':
+                this.loadTable('transfer-method-table', '/master-data/transfer-methods.php', this.getTransferMethodsColumns, 'Failed to load transfer methods');
                 break;
             case 'governing-bodies':
                 this.loadTable('governing-bodies-table', '/master-data/governing-bodies.php', this.getGoverningBodiesColumns, 'Failed to load governing bodies');
@@ -334,7 +334,7 @@ window.ETRM = {
                 this.loadTable('internal-bu-table', '/master-data/internal-bu.php', this.getInternalBUColumns, 'Failed to load internal business units');
                 break;
             case 'portfolio-master':
-                this.loadTable('portfolio-master-table', '/master-data/portfolio-master.php', this.getPortfolioMasterColumns, 'Failed to load portfolio master');
+                this.loadTable('portfolio-master-table', '/master-data/portfolio.php', this.getPortfolioColumns, 'Failed to load portfolio master');
                 break;
             case 'exchange':
                 this.loadTable('exchange-table', '/master-data/exchange.php', this.getExchangeColumns, 'Failed to load exchange');
@@ -357,35 +357,30 @@ window.ETRM = {
                 this.loadTable('activity-table', '/users/activity.php', this.getActivityColumns, 'Failed to load activity');
                 break;
             case 'market-prices': 
-                this.loadTable('market-prices-table', '/data/market_prices.php', this.getMarketPricesColumns, 'Failed to load market prices'); 
+                this.loadTable('market-prices-table', '/master-data/market-prices.php', this.getMarketPricesColumns, 'Failed to load market prices'); 
                  break; 
-            case 'commodity_names':     
-                this.loadTable('commodity-names-table', '/data/commodity_names.php', this.getCommodityNamesColumns, 'Failed to load commodity names');
+            case 'commodity_name':     
+                this.loadTable('commodity-names-table', '/master-data/commodity-names.php', this.getCommoditiesColumns, 'Failed to load commodity names');
+                break;  
+            case 'pricing-unit': 
+                this.loadTable('pricing-unit-table', '/master-data/pricing-units.php', this.getPricingUnitsColumns, 'Failed to load pricing units'); 
                 break; 
-            case 'contract_types': 
-                this.loadTable('contract-types-table', '/data/contract_types.php', this.getContractTypesColumns, 'Failed to load contract types');
+            case 'pricing-formula': 
+                this.loadTable('pricing-formula-table', '/master-data/pricing-formulas.php', this.getPricingFormulasColumns, 'Failed to load pricing formulas'); 
                 break; 
-            case 'pricing_units': 
-                this.loadTable('pricing-units-table', '/data/pricing_units.php', this.getPricingUnitsColumns, 'Failed to load pricing units'); 
+            case 'transfer-methods': 
+                this.loadTable('transfer-method-table', '/master-data/transfer-methods.php', this.getTransferMethodsColumns, 'Failed to load transfer methods'); 
                 break; 
-            case 'pricing_formulas': 
-                this.loadTable('pricing-formulas-table', '/data/pricing_formulas.php', this.getPricingFormulasColumns, 'Failed to load pricing formulas'); 
-                break; 
-            case 'transfer_methods': 
-                this.loadTable('transfer-methods-table', '/data/transfer_methods.php', this.getTransferMethodsColumns, 'Failed to load transfer methods'); 
-                break; 
-            case 'governing_bodies': 
-                this.loadTable('governing-bodies-table', '/data/governing_bodies.php', this.getGoverningBodiesColumns, 'Failed to load governing bodies'); 
+            case 'governing-body': 
+                this.loadTable('governing-bodies-table', '/master-data/governing-bodies.php', this.getGoverningBodiesColumns, 'Failed to load governing bodies'); 
                 break; 
             case 'load_profits': 
-                this.loadTable('load-profits-table', '/data/load_profits.php', this.getLoadProfitsColumns, 'Failed to load load profits'); 
+                this.loadTable('load-profits-table', '/master-data/load-profits.php', this.getLoadProfitsColumns, 'Failed to load load profits'); 
                 break; 
-            case 'discharging_ports': 
-                this.loadTable('discharging-ports-table', '/data/discharging_ports.php', this.getDischargingPortsColumns, 'Failed to load discharging ports'); 
+            case 'discharging-port': 
+                this.loadTable('discharging-port-table', '/master-data/discharging-ports.php', this.getDischargingPortsColumns, 'Failed to load discharging ports'); 
                 break; 
-            case 'portfolio_master': 
-                this.loadTable('portfolio-master-table', '/data/portfolio_master.php', this.getPortfolioMasterColumns, 'Failed to load portfolios'); 
-                break;
+          
             // Integrations
             case 'api-fix':
                 this.loadTable('api-fix-table', '/integrations/api-fix.php', this.getApiFixColumns, 'Failed to load API FIX');
@@ -1245,6 +1240,7 @@ window.ETRM = {
 
             this.apiCall(url)
                 .then(data => {
+                    // console.error('load data');
                     if (data.success) {
                         this.renderTable(container, data.data, columnFn());
                     } else {
@@ -1256,8 +1252,18 @@ window.ETRM = {
                     this.showError(container, `Error loading ${containerId}`);
                 });
             },
-
-
+        loadData(url) {
+            this.apiCall(url)
+                        .then(data => {
+                            return data;
+                        })
+                        .catch(error => {
+                            console.error(`${containerId} error:`, error);
+                            this.showError(container, `Error loading ${containerId}`);
+                        });
+                   
+        },
+     
     loadCounterparties() {
         const container = document.getElementById('counterparties-table');
         if (!container) {
@@ -1763,11 +1769,10 @@ window.ETRM = {
                         // Market Prices
             getMarketPricesColumns() {
                 return [
-                    { field: 'id', title: 'ID' },
-                    { field: 'commodity', title: 'Commodity' },
-                    { field: 'price', title: 'Price', type: 'currency' },
-                    { field: 'currency', title: 'Currency' },
-                    { field: 'date', title: 'Date', type: 'date' }
+                    { field: 'market_index_id', title: 'Market Index ID' },
+                    { field: 'closing_date', title: 'Closing Date', type: 'date' },
+                    { field: 'expiry_date', title: 'Expiry Date', type: 'date' },
+                    { field: 'closing_price', title: 'Closing Price', type: 'currency' }
                 ];
             },
 
@@ -1776,8 +1781,6 @@ window.ETRM = {
                 return [
                     { field: 'id', title: 'ID' },
                     { field: 'name', title: 'Contract Type' },
-                    { field: 'description', title: 'Description' },
-                    { field: 'status', title: 'Status', type: 'status' }
                 ];
             },
 
@@ -1786,9 +1789,9 @@ window.ETRM = {
                 return [
                     { field: 'id', title: 'ID' },
                     { field: 'name', title: 'Commodity Name' },
-                    { field: 'category', title: 'Category' },
-                    { field: 'uom', title: 'Unit of Measure' },
-                    { field: 'status', title: 'Status', type: 'status' }
+                    // { field: 'category', title: 'Category' },
+                    // { field: 'uom', title: 'Unit of Measure' },
+                    // { field: 'status', title: 'Status', type: 'status' }
                 ];
             },
 
@@ -1807,7 +1810,7 @@ window.ETRM = {
                 return [
                     { field: 'id', title: 'ID' },
                     { field: 'name', title: 'Pricing Unit' },
-                    { field: 'description', title: 'Description' }
+                    // { field: 'description', title: 'Description' }
                 ];
             },
 
@@ -1815,20 +1818,19 @@ window.ETRM = {
             getPricingFormulasColumns() {
                 return [
                     { field: 'id', title: 'ID' },
-                    { field: 'formula_name', title: 'Formula Name' },
-                    { field: 'expression', title: 'Expression' },
-                    { field: 'description', title: 'Description' }
+                    { field: 'name', title: 'Formula Name' },
+                    { field: 'details', title: 'Description' }
                 ];
             },
 
             // Market Indices
-            getMarketIndicesColumns() {
+           getMarketIndexColumns() {
                 return [
                     { field: 'id', title: 'ID' },
-                    { field: 'name', title: 'Index Name' },
-                    { field: 'value', title: 'Value', type: 'number' },
-                    { field: 'currency', title: 'Currency' },
-                    { field: 'date', title: 'Date', type: 'date' }
+                    { field: 'index_name', title: 'Index Name' },
+                    { field: 'index_uom', title: 'Value' },
+                    { field: 'exchange', title: 'Exchange' },
+                    { field: 'expiry_date', title: ' Expiry Date', type: 'date' }
                 ];
             },
 
@@ -1836,9 +1838,8 @@ window.ETRM = {
             getPaymentTermsColumns() {
                 return [
                     { field: 'id', title: 'ID' },
-                    { field: 'term_name', title: 'Payment Term' },
-                    { field: 'days', title: 'Days', type: 'number' },
-                    { field: 'description', title: 'Description' }
+                    { field: 'name', title: 'Payment Term' },
+                    { field: 'details', title: 'Description' }
                 ];
             },
 
@@ -1846,8 +1847,7 @@ window.ETRM = {
             getTransferMethodsColumns() {
                 return [
                     { field: 'id', title: 'ID' },
-                    { field: 'method', title: 'Method' },
-                    { field: 'description', title: 'Description' }
+                    { field: 'name', title: 'Method' },
                 ];
             },
 
@@ -1856,8 +1856,6 @@ window.ETRM = {
                 return [
                     { field: 'id', title: 'ID' },
                     { field: 'name', title: 'Governing Body' },
-                    { field: 'country', title: 'Country' },
-                    { field: 'status', title: 'Status', type: 'status' }
                 ];
             },
 
@@ -1877,8 +1875,6 @@ window.ETRM = {
                 return [
                     { field: 'id', title: 'ID' },
                     { field: 'name', title: 'Port Name' },
-                    { field: 'location', title: 'Location' },
-                    { field: 'country', title: 'Country' }
                 ];
             },
 
@@ -1887,8 +1883,8 @@ window.ETRM = {
                 return [
                     { field: 'id', title: 'ID' },
                     { field: 'name', title: 'Pricing UOM' },
-                    { field: 'symbol', title: 'Symbol' },
-                    { field: 'description', title: 'Description' }
+                    // { field: 'symbol', title: 'Symbol' },
+                    // { field: 'description', title: 'Description' }
                 ];
             },
 
@@ -1897,8 +1893,7 @@ window.ETRM = {
                 return [
                     { field: 'id', title: 'ID' },
                     { field: 'name', title: 'Business Unit' },
-                    { field: 'description', title: 'Description' },
-                    { field: 'status', title: 'Status', type: 'status' }
+                  
                 ];
             },
 
@@ -1916,10 +1911,8 @@ window.ETRM = {
             getPortfolioColumns() {
                 return [
                     { field: 'id', title: 'ID' },
-                    { field: 'portfolio_name', title: 'Portfolio Name' },
-                    { field: 'manager', title: 'Manager' },
-                    { field: 'value', title: 'Value', type: 'currency' },
-                    { field: 'currency', title: 'Currency' }
+                    { field: 'name', title: 'Portfolio Name' },
+                 
                 ];
             },
 
@@ -1928,8 +1921,7 @@ window.ETRM = {
                 return [
                     { field: 'id', title: 'ID' },
                     { field: 'name', title: 'Exchange' },
-                    { field: 'country', title: 'Country' },
-                    { field: 'currency', title: 'Currency' }
+                
                 ];
             },
 
@@ -1937,9 +1929,7 @@ window.ETRM = {
             getCurrencyColumns() {
                 return [
                     { field: 'id', title: 'ID' },
-                    { field: 'code', title: 'Currency Code' },
                     { field: 'name', title: 'Currency Name' },
-                    { field: 'symbol', title: 'Symbol' }
                 ];
             },
 
@@ -1998,6 +1988,7 @@ window.ETRM = {
             // 🔽 New cases for your nav tabs
             case 'create-market-price':
                 this.showCreateModal('Market Price', this.getMarketPriceForm(), 'master-data/market-prices.php');
+                this.populateMarketIndexSelect();
                 break;
             case 'create-contract-type':
                 this.showCreateModal('Contract Type', this.getContractTypeForm(), 'master-data/contract-types.php');
@@ -2020,9 +2011,7 @@ window.ETRM = {
             case 'create-payment-term':
                 this.showCreateModal('Payment Term', this.getPaymentTermsForm(), 'master-data/payment-terms.php');
                 break;
-            case 'create-transfer-method':
-                this.showCreateModal('Transfer Method', this.getTransferMethodForm(), 'master-data/transfer-methods.php');
-                break;
+           
             case 'create-governing-body':
                 this.showCreateModal('Governing Body', this.getGoverningBodyForm(), 'master-data/governing-bodies.php');
                 break;
@@ -2033,7 +2022,7 @@ window.ETRM = {
                 this.showCreateModal('Discharging Port', this.getDischargingPortForm(), 'master-data/discharging-ports.php');
                 break;
             case 'create-pricing-uom':
-                this.showCreateModal('Pricing UOM', this.getPricingUOMForm(), 'master-data/pricing-uom.php');
+                this.showCreateModal('Pricing UOM', this.getPricingUomForm(), 'master-data/pricing-uom.php');
                 break;
             case 'create-internal-bu':
                 this.showCreateModal('Internal BU', this.getInternalBUForm(), 'master-data/internal-bu.php');
@@ -3655,10 +3644,13 @@ getMarketPriceForm() {
     return `
           <div class="row">
             <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="market_index" name="market_index" placeholder="Market Index" required>
-                    <label for="market_index">Market Index</label>
-                </div>
+            <div class="form-floating mb-3">
+                <select class="form-select" id="market_index" name="market_index" required>
+                    <option value="" disabled selected>Loading...</option>
+                </select>
+                <label for="market_index">Market Index</label>
+            </div>
+
             </div>
             <div class="col-md-6">
                 <div class="form-floating mb-3">
@@ -3689,7 +3681,7 @@ getContractTypeForm() {
         <div class="row">
             <div class="col-md-12">
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="contract_type" name="contract_type" placeholder="Contract Type" required>
+                    <input type="text" class="form-control" id="contract_type" name="name" placeholder="Contract Type" required>
                     <label for="contract_type">Contract Type</label>
                 </div>
             </div>
@@ -3702,7 +3694,7 @@ getCommodityNameForm() {
         <div class="row">
             <div class="col-md-12">
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="commodity_name" name="commodity_name" placeholder="Commodity Name" required>
+                    <input type="text" class="form-control" id="commodity_name" name="name" placeholder="Commodity Name" required>
                     <label for="commodity_name">Commodity Name</label>
                 </div>
             </div>
@@ -3728,7 +3720,7 @@ getPricingUnitForm() {
         <div class="row">
             <div class="col-md-12">
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="pricing_unit" name="pricing_unit" placeholder="Pricing Unit" required>
+                    <input type="text" class="form-control" id="pricing_unit" name="name" placeholder="Pricing Unit" required>
                     <label for="pricing_unit">Pricing Unit</label>
                 </div>
             </div>
@@ -3741,13 +3733,13 @@ getPricingFormulaForm() {
         <div class="row">
             <div class="col-md-6">
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="formula_name" name="formula_name" placeholder="Formula Name" required>
+                    <input type="text" class="form-control" id="formula_name" name="name" placeholder="Formula Name" required>
                     <label for="formula_name">Formula Name</label>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-floating mb-3">
-                    <textarea class="form-control" id="formula_details" name="formula_details" placeholder="Formula Details" style="height:100px" required></textarea>
+                    <textarea class="form-control" id="formula_details" name="details" placeholder="Formula Details" style="height:100px" required></textarea>
                     <label for="formula_details">Formula Details</label>
                 </div>
             </div>
@@ -3793,13 +3785,13 @@ getPaymentTermsForm() {
         <div class="row">
             <div class="col-md-6">
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="payment_term_title" name="payment_term_title" placeholder="Payment Term Title" required>
+                    <input type="text" class="form-control" id="payment_term_title" name="name" placeholder="Payment Term Title" required>
                     <label for="payment_term_title">Payment Term Title</label>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-floating mb-3">
-                    <textarea class="form-control" id="payment_terms_description" name="payment_terms_description" placeholder="Payment Terms Described / Elaborated" style="height:100px" required></textarea>
+                    <textarea class="form-control" id="payment_terms_description" name="details" placeholder="Payment Terms Described / Elaborated" style="height:100px" required></textarea>
                     <label for="payment_terms_description">Payment Terms Described / Elaborated</label>
                 </div>
             </div>
@@ -3812,7 +3804,7 @@ getTransferMethodForm() {
         <div class="row">
             <div class="col-md-12">
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="transfer_method" name="transfer_method" placeholder="Transfer Method" required>
+                    <input type="text" class="form-control" id="transfer_method" name="name" placeholder="Transfer Method" required>
                     <label for="transfer_method">Transfer Method</label>
                 </div>
             </div>
@@ -3825,7 +3817,7 @@ getGoverningBodyForm() {
         <div class="row">
             <div class="col-md-12">
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="governing_body" name="governing_body" placeholder="Governing Body" required>
+                    <input type="text" class="form-control" id="governing_body" name="name" placeholder="Governing Body" required>
                     <label for="governing_body">Governing Body</label>
                 </div>
             </div>
@@ -3851,7 +3843,7 @@ getDischargingPortForm() {
         <div class="row">
             <div class="col-md-12">
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="discharging_port" name="discharging_port" placeholder="Discharging Port" required>
+                    <input type="text" class="form-control" id="discharging_port" name="name" placeholder="Discharging Port" required>
                     <label for="discharging_port">Discharging Port</label>
                 </div>
             </div>
@@ -3864,7 +3856,7 @@ getPricingUomForm() {
         <div class="row">
             <div class="col-md-12">
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="pricing_uom" name="pricing_uom" placeholder="Pricing UOM" required>
+                    <input type="text" class="form-control" id="pricing_uom" name="name" placeholder="Pricing UOM" required>
                     <label for="pricing_uom">Pricing UOM</label>
                 </div>
             </div>
@@ -3872,12 +3864,12 @@ getPricingUomForm() {
     `;
 },
 
-getInternalBuForm() {
+getInternalBUForm() {
     return `
         <div class="row">
             <div class="col-md-12">
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="internal_bu" name="internal_bu" placeholder="Internal Business Unit" required>
+                    <input type="text" class="form-control" id="internal_bu" name="name" placeholder="Internal Business Unit" required>
                     <label for="internal_bu">Internal BU</label>
                 </div>
             </div>
@@ -3890,7 +3882,7 @@ getApiFixForm() {
         <div class="row">
             <div class="col-md-12">
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="api_fix" name="api_fix" placeholder="API FIX Details" required>
+                    <input type="text" class="form-control" id="api_fix" name="name" placeholder="API FIX Details" required>
                     <label for="api_fix">API FIX Trade Capture</label>
                 </div>
             </div>
@@ -3898,12 +3890,12 @@ getApiFixForm() {
     `;
 },
 
-getPortfolioMasterForm() {
+getPortfolioForm() {
     return `
         <div class="row">
             <div class="col-md-12">
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="portfolio" name="portfolio" placeholder="Portfolio Name" required>
+                    <input type="text" class="form-control" id="portfolio" name="name" placeholder="Portfolio Name" required>
                     <label for="portfolio">Portfolio</label>
                 </div>
             </div>
@@ -3916,7 +3908,7 @@ getExchangeForm() {
         <div class="row">
             <div class="col-md-12">
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="exchange" name="exchange" placeholder="Exchange Name" required>
+                    <input type="text" class="form-control" id="exchange" name="name" placeholder="Exchange Name" required>
                     <label for="exchange">Exchange</label>
                 </div>
             </div>
@@ -3929,7 +3921,7 @@ getCurrencyForm() {
         <div class="row">
             <div class="col-md-12">
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="currency" name="currency" placeholder="Currency" required>
+                    <input type="text" class="form-control" id="currency" name="name" placeholder="Currency" required>
                     <label for="currency">Currency</label>
                 </div>
             </div>
@@ -3939,25 +3931,52 @@ getCurrencyForm() {
 
 
     // ===== UTILITY METHODS =====
-    apiCall(endpoint) {
-        const url = `${this.config.apiBaseUrl}${endpoint}`;
-        
-        return fetch(url, {
+async apiCall(endpoint) {
+    const url = `${this.config.apiBaseUrl}${endpoint}`;
+
+    try {
+        const response = await fetch(url, {
             method: 'GET',
             credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/json',
                 'X-Requested-With': 'XMLHttpRequest'
             }
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-            return response.json();
         });
-    },
 
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log('API Response:', data);
+        return data;
+    } catch (error) {
+        console.error('API Call Error:', error);
+        throw error;
+    }
+},
+
+async populateMarketIndexSelect() {
+    try {
+        const data = await this.apiCall('/master-data/market-index.php');
+        const select = document.getElementById('market_index');
+
+        // Clear existing options
+        select.innerHTML = '<option value="" disabled selected>Select Market Index</option>';
+console.log('market-index data:', data);
+        if (data.success && Array.isArray(data.data)) {
+            data.data.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.id;                 // value = index id
+                option.textContent = item.index_name;   // label = index name
+                select.appendChild(option);
+            });
+        }
+    } catch (error) {
+        console.error('Error loading Market Index options:', error);
+    }
+},
     showLoading(container) {
         container.innerHTML = '<div class="loading"></div>';
     },

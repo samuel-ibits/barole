@@ -630,7 +630,7 @@ if (!$userDetails) {
             <button class="btn btn-primary mb-3" data-action="create-contract-type">
             <i class="bi bi-plus"></i> New Contract Type
             </button>
-            <div id="contract-type-table"></div>
+            <div id="contract-types-table"></div>
         </div>
         </div>
 
@@ -641,7 +641,7 @@ if (!$userDetails) {
             <button class="btn btn-primary mb-3" data-action="create-commodity">
             <i class="bi bi-plus"></i> New Commodity
             </button>
-            <div id="commodity-name-table"></div>
+            <div id="commodity-names-table"></div>
         </div>
         </div>
 
@@ -696,7 +696,7 @@ if (!$userDetails) {
             <button class="btn btn-primary mb-3" data-action="create-payment-term">
             <i class="bi bi-plus"></i> New Payment Term
             </button>
-            <div id="payment-terms-table"></div>
+            <div id="payment-term-table"></div>
         </div>
         </div>
 
@@ -718,7 +718,7 @@ if (!$userDetails) {
             <button class="btn btn-primary mb-3" data-action="create-governing-body">
             <i class="bi bi-plus"></i> New Governing Body
             </button>
-            <div id="governing-body-table"></div>
+            <div id="governing-bodies-table"></div>
         </div>
         </div>
 
@@ -784,7 +784,7 @@ if (!$userDetails) {
             <button class="btn btn-primary mb-3" data-action="create-portfolio">
             <i class="bi bi-plus"></i> New Portfolio
             </button>
-            <div id="portfolio-table"></div>
+            <div id="portfolio-master-table"></div>
         </div>
         </div>
 
