@@ -530,6 +530,29 @@ if (!$userDetails) {
                     </button>
                 </li>
 
+                <!-- Added Master Data Subtabs -->
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="fx-trade-capture-tab" data-bs-toggle="tab" data-bs-target="#fx-trade-capture" type="button" role="tab">
+                        <i class="bi bi-currency-exchange"></i> FX Trade Capture
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="end-of-day-tab" data-bs-toggle="tab" data-bs-target="#end-of-day" type="button" role="tab">
+                        <i class="bi bi-moon"></i> EOB Checklist
+                    </button>
+                </li>
+            
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="invoice-capture-tab" data-bs-toggle="tab" data-bs-target="#invoice-capture" type="button" role="tab">
+                        <i class="bi bi-receipt"></i> Invoice Capture
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="logistics-scheduling-tab" data-bs-toggle="tab" data-bs-target="#logistics-scheduling" type="button" role="tab">
+                        <i class="bi bi-calendar-event"></i> Logistics & Scheduling
+                    </button>
+                </li>
+
 
             </ul>
             
@@ -807,6 +830,49 @@ if (!$userDetails) {
             <i class="bi bi-plus"></i> New Currency
             </button>
             <div id="currency-table"></div>
+        </div>
+        </div>
+
+        <!-- FX Trade Capture (Master Data) -->
+        <div class="tab-pane fade" id="fx-trade-capture" role="tabpanel">
+        <div class="mt-3">
+            <h4>FX Trade Capture</h4>
+            <button class="btn btn-primary mb-3" data-action="create-fx-trade">
+            <i class="bi bi-plus"></i> New FX Trade
+            </button>
+            <div id="fx-trade-capture-table"></div>
+        </div>
+        </div>
+
+        <!-- EOB Checklist -->
+        <div class="tab-pane fade" id="end-of-day" role="tabpanel">
+        <div class="mt-3">
+            <h4>End of Day Checklist</h4>
+            <div id="end-of-day-content"></div>
+        </div>
+        </div>
+
+     
+
+        <!-- Invoice Capture (Master Data) -->
+        <div class="tab-pane fade" id="invoice-capture" role="tabpanel">
+        <div class="mt-3">
+            <h4>Invoice Capture</h4>
+            <button class="btn btn-primary mb-3" data-action="create-invoice">
+            <i class="bi bi-plus"></i> New Invoice
+            </button>
+            <div id="invoice-capture-table"></div>
+        </div>
+        </div>
+
+        <!-- Logistics & Scheduling (Master Data) -->
+        <div class="tab-pane fade" id="logistics-scheduling" role="tabpanel">
+        <div class="mt-3">
+            <h4>Logistics & Scheduling</h4>
+            <button class="btn btn-primary mb-3" data-action="create-logistics">
+            <i class="bi bi-plus"></i> New Logistics
+            </button>
+            <div id="logistics-scheduling-table"></div>
         </div>
         </div>
 

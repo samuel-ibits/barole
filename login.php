@@ -9,11 +9,13 @@ session_start();
 
 // Basic database connection for testing
 require_once 'config/database.php';
+include 'includes/functions.php';
 
 // Redirect if already logged in
 if (($_SESSION['logged_in'] ?? false)) {
-    header('Location: index.php');
-    exit;
+redirect('index.php');
+    // echo "<script>window.location.href='dashboard.php';</script>";
+exit();
 }
 
 $error = '';
@@ -23,7 +25,6 @@ $success = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
-    
     if (empty($username) || empty($password)) {
         $error = 'Please enter both username and password.';
     } else {
@@ -31,8 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $db = getDB();
             $stmt = $db->query("SELECT * FROM users WHERE username = ? AND status = 'active'", [$username]);
             $user = $stmt->fetch();
-    
-            if ($user && password_verify($password, $user['password_hash'])) {
+                
+        if ($user && password_verify($password, $user['password_hash'])) {
                 // Set session variables (simple approach)
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
@@ -50,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     );
                 } catch (Exception $e) {
                     // Continue even if update fails
-                    error_log("Failed to update last login: " . $e->getMessage());
+                    // error_log("Failed to update last login: " . $e->getMessage());
                     echo $e->getMessage();
                 }
                 
@@ -60,9 +61,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error = "Invalid username or password";
             }
         } catch (Exception $e) {
-            echo $e->getMessage();
-            error_log("Login error: " . $e->getMessage());
-            $error = "Login failed. Please try again.";
+            echo $e;
+            // error_log("Login error: " . $e->getMessage());
+            // $error = "Login failed. Please try again.";
         }
     }
 }

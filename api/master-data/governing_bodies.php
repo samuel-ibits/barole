@@ -1,4 +1,3 @@
-```php
 <?php
 /**
  * Generic CRUD API Template
@@ -133,4 +132,3 @@ function handleDelete($db) {
     }
 }
 ?>
-```

@@ -149,7 +149,7 @@ function logUserActivity($action, $details = '') {
  */
 function sendJSONResponse($data, $statusCode = 200) {
     header('Content-Type: application/json; charset=utf-8');
-    http_response_code($statusCode);
+    // http_response_code($statusCode);
     echo json_encode($data);
     exit;
 }
@@ -171,4 +171,3 @@ function sendSuccessResponse($data = null, $message = 'Success') {
     }
     sendJSONResponse($response);
 }
-?> 

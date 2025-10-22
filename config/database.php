@@ -13,9 +13,9 @@ if ($isProduction) {
     // Production Database Configuration (MySQL for cPanel/hosting)
     define('DB_TYPE', 'mysql');
     define('DB_HOST', 'localhost');
-    define('DB_NAME', 'etrm');  // Update this with your actual database name
-    define('DB_USER', 'barole_etrm');        // Update this with your actual database user
-    define('DB_PASS', 'barole_etrm');  // Update this with your actual database password
+    define('DB_NAME', 'energytrm');  // Update this with your actual database name
+    define('DB_USER', 'energytrmuser');        // Update this with your actual database user
+    define('DB_PASS', '#!.RUe9(R-In]N}b');  // Update this with your actual database password
     define('DB_CHARSET', 'utf8mb4');
 } else {
     // Development Database Configuration (SQLite for local development)

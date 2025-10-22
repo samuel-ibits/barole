@@ -232,6 +232,9 @@ window.ETRM = {
             case 'carriers':
                 this.loadCarriers();
                 break;
+            case 'fx-trade-capture':
+                this.loadTable('fx-trade-capture-table', '/trading/fx-trades.php', this.getFXTradesColumns, 'Failed to load FX trade capture');
+                break;
             case 'portfolio':
                 this.loadPortfolio();
                 break;
@@ -343,6 +346,20 @@ window.ETRM = {
                 this.loadTable('currency-table', '/master-data/currency.php', this.getCurrencyColumns, 'Failed to load currency');
                 break;
 
+            // End of Day (EOB) Checklist under Master Data
+            case 'end-of-day':
+                this.renderEndOfDayChecklist();
+                break;
+        
+            // Invoice Capture (Master Data)
+            case 'invoice-capture':
+                this.loadTable('invoice-capture-table', '/operations/invoices.php', this.getInvoicesColumns, 'Failed to load invoice capture');
+                break;
+            // Logistics & Scheduling (Master Data)
+            case 'logistics-scheduling':
+                this.loadTable('logistics-scheduling-table', '/operations/logistics.php', this.getLogisticsColumns, 'Failed to load logistics & scheduling');
+                break;
+
             // Users & Security
             case 'users':
                 this.loadTable('users-table', '/users/list.php', this.getUsersColumns, 'Failed to load users');
@@ -392,6 +409,30 @@ window.ETRM = {
 
             }
         },
+
+    // Render EOB Checklist into its container if present
+    renderEndOfDayChecklist() {
+        const container = document.getElementById('end-of-day-content');
+        if (!container) {
+            console.warn('EOB container not found: #end-of-day-content');
+            // As a fallback, open in a modal
+            this.showCreateModal('End of Day Checklist', this.getEndOfDayProcessForm(), 'master-data/end-of-day.php');
+            return;
+        }
+        container.innerHTML = this.getEndOfDayProcessForm();
+    },
+
+    // Render COB Checklist into its container if present
+    renderCloseOfBusinessChecklist() {
+        const container = document.getElementById('close-of-business-content');
+        if (!container) {
+            console.warn('COB container not found: #close-of-business-content');
+            // Fallback to modal using the same form for now; can be customized later
+            this.showCreateModal('Close of Business Checklist', this.getEndOfDayProcessForm(), 'master-data/close-of-business.php');
+            return;
+        }
+        container.innerHTML = this.getEndOfDayProcessForm();
+    },
 
     // Clear saved tab state (utility method)
     clearTabState() {
@@ -1536,6 +1577,7 @@ window.ETRM = {
                     <thead>
                         <tr>
                             ${columns.map(col => `<th>${col.title}</th>`).join('')}
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1562,6 +1604,21 @@ window.ETRM = {
                 
                 html += `<td data-label="${col.title}">${value}</td>`;
             });
+
+            const rowId = this.getPrimaryKey(row);
+            const containerId = container.id;
+            html += `
+                <td>
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-secondary" ${rowId ? '' : 'disabled'} onclick="ETRM.editRecord('${containerId}', '${rowId || ''}')">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-outline-danger" ${rowId ? '' : 'disabled'} onclick="ETRM.deleteRecord('${containerId}', '${rowId || ''}')">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            `;
             html += '</tr>';
         });
 
@@ -1573,6 +1630,161 @@ window.ETRM = {
 
         container.innerHTML = html;
         console.log(`✅ Rendered table with ${data.length} rows`);
+    },
+
+    // Determine a primary key for generic actions
+    getPrimaryKey(row) {
+        const candidateKeys = [
+            'id',
+            'trade_id',
+            'invoice_number',
+            'logistics_id',
+            'settlement_id',
+            'market_index_id',
+            'code'
+        ];
+        for (const key of candidateKeys) {
+            if (row[key]) return String(row[key]);
+        }
+        // Fallback: first truthy field
+        const firstKey = Object.keys(row).find(k => row[k]);
+        return firstKey ? String(row[firstKey]) : '';
+    },
+
+    // Map container id to forms and API endpoints
+    getEntityConfigFromContainerId(containerId) {
+        const map = {
+            // Trading
+            'physical-sales-table': { title: 'Physical Sale', form: 'getPhysicalSaleForm', endpoint: 'trading/physical-sales.php', idParam: 'trade_id' },
+            'financial-trades-table': { title: 'Financial Trade', form: 'getFinancialTradeForm', endpoint: 'trading/financial-trades.php', idParam: 'trade_id' },
+            'fx-trades-table': { title: 'FX Trade', form: 'getFXTradeForm', endpoint: 'trading/fx-trades.php', idParam: 'trade_id' },
+
+            // Operations
+            'invoices-table': { title: 'Invoice', form: 'getInvoiceForm', endpoint: 'operations/invoices.php', idParam: 'invoice_number' },
+            'logistics-table': { title: 'Logistics', form: 'getLogisticsForm', endpoint: 'operations/logistics.php', idParam: 'logistics_id' },
+            'settlements-table': { title: 'Settlement', form: 'getSettlementForm', endpoint: 'operations/settlements.php', idParam: 'settlement_id' },
+
+            // Master Data
+            'counterparties-table': { title: 'Counterparty', form: 'getCounterpartyForm', endpoint: 'master-data/counterparties.php', idParam: 'id' },
+            'products-table': { title: 'Product', form: 'getProductForm', endpoint: 'master-data/products.php', idParam: 'id' },
+            'business-units-table': { title: 'Business Unit', form: 'getBusinessUnitForm', endpoint: 'master-data/business-units.php', idParam: 'id' },
+            'brokers-table': { title: 'Broker', form: 'getBrokerForm', endpoint: 'master-data/brokers.php', idParam: 'id' },
+            'ports-table': { title: 'Port', form: 'getPortForm', endpoint: 'master-data/ports.php', idParam: 'id' },
+            'carriers-table': { title: 'Carrier', form: 'getCarrierForm', endpoint: 'master-data/carriers.php', idParam: 'id' },
+            'market-prices-table': { title: 'Market Price', form: 'getMarketPriceForm', endpoint: 'master-data/market-prices.php', idParam: 'id' },
+            'contract-types-table': { title: 'Contract Type', form: 'getContractTypeForm', endpoint: 'master-data/contract-types.php', idParam: 'id' },
+            'commodity-names-table': { title: 'Commodity Name', form: 'getCommodityNameForm', endpoint: 'master-data/commodities.php', idParam: 'id' },
+            'product-uom-table': { title: 'Product UOM', form: 'getProductUomForm', endpoint: 'master-data/product-uom.php', idParam: 'id' },
+            'pricing-units-table': { title: 'Pricing Unit', form: 'getPricingUnitForm', endpoint: 'master-data/pricing-units.php', idParam: 'id' },
+            'pricing-formulas-table': { title: 'Pricing Formula', form: 'getPricingFormulaForm', endpoint: 'master-data/pricing-formulas.php', idParam: 'id' },
+            'market-index-table': { title: 'Market Index', form: 'getMarketIndexForm', endpoint: 'master-data/market-index.php', idParam: 'id' },
+            'payment-term-table': { title: 'Payment Term', form: 'getPaymentTermsForm', endpoint: 'master-data/payment-terms.php', idParam: 'id' },
+            'transfer-method-table': { title: 'Transfer Method', form: 'getTransferMethodForm', endpoint: 'master-data/transfer-methods.php', idParam: 'id' },
+            'governing-bodies-table': { title: 'Governing Body', form: 'getGoverningBodyForm', endpoint: 'master-data/governing-bodies.php', idParam: 'id' },
+            'load-profits-table': { title: 'Load Profit', form: 'getLoadProfitForm', endpoint: 'master-data/load-profits.php', idParam: 'id' },
+            'discharging-ports-table': { title: 'Discharging Port', form: 'getDischargingPortForm', endpoint: 'master-data/discharging-ports.php', idParam: 'id' },
+            'pricing-uom-table': { title: 'Pricing UOM', form: 'getPricingUomForm', endpoint: 'master-data/pricing-uom.php', idParam: 'id' },
+            'internal-bu-table': { title: 'Internal BU', form: 'getInternalBUForm', endpoint: 'master-data/internal-bu.php', idParam: 'id' },
+            'portfolio-master-table': { title: 'Portfolio', form: 'getPortfolioForm', endpoint: 'master-data/portfolio.php', idParam: 'id' },
+            'exchange-table': { title: 'Exchange', form: 'getExchangeForm', endpoint: 'master-data/exchange.php', idParam: 'id' },
+            'currency-table': { title: 'Currency', form: 'getCurrencyForm', endpoint: 'master-data/currency.php', idParam: 'id' },
+
+            // Users & Security
+            'users-table': { title: 'User', form: 'getUserForm', endpoint: 'users/create_simple.php', idParam: 'id' },
+            'roles-table': { title: 'Role', form: 'getRoleForm', endpoint: 'users/roles.php', idParam: 'id' },
+            'permissions-table': { title: 'Permission', form: 'getPermissionForm', endpoint: 'users/permissions.php', idParam: 'id' },
+            'activity-table': { title: 'Activity', form: null, endpoint: 'users/activity.php', idParam: 'id' }
+        };
+        return map[containerId] || null;
+    },
+
+    async editRecord(containerId, recordId) {
+        try {
+            const config = this.getEntityConfigFromContainerId(containerId);
+            if (!config || !config.form) {
+                this.showNotification('Info', 'Editing is not available for this table yet.', 'info');
+                return;
+            }
+
+            // Open modal with form
+            const formHtml = this[config.form]();
+            this.showCreateModal(`Edit ${config.title}`, formHtml, config.endpoint);
+
+            // Try to load existing data
+            let data;
+            try {
+                data = await this.apiCall(`/${config.endpoint}?${encodeURIComponent(config.idParam)}=${encodeURIComponent(recordId)}`);
+            } catch (e) {
+                // If single fetch not supported, ignore and allow manual edit
+                data = null;
+            }
+
+            // Prefill when possible
+            setTimeout(() => {
+                try {
+                    const form = document.getElementById('createForm');
+                    const payload = data && data.data ? (Array.isArray(data.data) ? data.data[0] : data.data) : null;
+                    if (form && payload) {
+                        Array.from(form.elements).forEach(el => {
+                            if (!el.name) return;
+                            if (payload.hasOwnProperty(el.name)) {
+                                el.value = payload[el.name] ?? '';
+                            }
+                        });
+                    }
+                    // Ensure id is present for update
+                    if (form && config.idParam) {
+                        const hiddenId = document.createElement('input');
+                        hiddenId.type = 'hidden';
+                        hiddenId.name = config.idParam;
+                        hiddenId.value = recordId;
+                        form.appendChild(hiddenId);
+                    }
+                } catch (prefillErr) {
+                    console.warn('Prefill error:', prefillErr);
+                }
+            }, 150);
+        } catch (error) {
+            console.error('Edit error:', error);
+            this.showNotification('Error', 'Failed to open edit form', 'danger');
+        }
+    },
+
+    async deleteRecord(containerId, recordId) {
+        try {
+            const config = this.getEntityConfigFromContainerId(containerId);
+            if (!config) {
+                this.showNotification('Info', 'Delete is not available for this table yet.', 'info');
+                return;
+            }
+
+            if (!confirm('Are you sure you want to delete this record?')) return;
+
+            const formData = new FormData();
+            formData.append(config.idParam || 'id', recordId);
+
+            const response = await fetch(`api/${config.endpoint}?${encodeURIComponent(config.idParam)}=${encodeURIComponent(recordId)}`, {
+                method: 'DELETE',
+                body: formData
+            });
+            const text = await response.text();
+            let json;
+            try {
+                json = JSON.parse(text);
+            } catch (e) {
+                throw new Error('Invalid server response during delete');
+            }
+
+            if (json && json.success) {
+                this.showNotification('Success', `${config.title} deleted successfully`, 'success');
+                this.refreshCurrentTable();
+            } else {
+                throw new Error(json && json.message ? json.message : 'Delete failed');
+            }
+        } catch (error) {
+            console.error('Delete error:', error);
+            this.showNotification('Error', error.message || 'Failed to delete record', 'danger');
+        }
     },
 
     // ===== COLUMN DEFINITIONS =====
@@ -3928,7 +4140,205 @@ getCurrencyForm() {
         </div>
     `;
 },
-
+getEndOfDayProcessForm() {
+    return `
+        <div class="eod-process-form">
+            <h5 class="mb-4">End of Day Process Configuration</h5>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3 p-3 border rounded">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <label class="form-label mb-0">Retrieve latest prices from external sources</label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="retrieve_prices" name="retrieve_prices" checked>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="mb-3 p-3 border rounded">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <label class="form-label mb-0">Run custom price curve calculations</label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="price_curve_calc" name="price_curve_calc" checked>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3 p-3 border rounded">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <label class="form-label mb-0">Verify that all required prices are available</label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="verify_prices" name="verify_prices" checked>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="mb-3 p-3 border rounded">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <label class="form-label mb-0">Recompute trade values with the latest prices</label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="recompute_trade_values" name="recompute_trade_values" checked>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3 p-3 border rounded">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <label class="form-label mb-0">Calculate exposures for all open positions</label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="calc_exposures" name="calc_exposures" checked>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="mb-3 p-3 border rounded">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <label class="form-label mb-0">Compute Mark-to-Market (MtM) values</label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="compute_mtm" name="compute_mtm" checked>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3 p-3 border rounded">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <label class="form-label mb-0">Calculate P&L (Realized and Unrealized)</label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="calc_pnl" name="calc_pnl" checked>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="mb-3 p-3 border rounded">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <label class="form-label mb-0">Recompute valuations for physical assets</label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="recompute_valuations" name="recompute_valuations" checked>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3 p-3 border rounded">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <label class="form-label mb-0">Update credit exposure for counterparties</label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="update_credit_exposure" name="update_credit_exposure" checked>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="mb-3 p-3 border rounded">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <label class="form-label mb-0">Generate and validate invoices</label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="generate_invoices" name="generate_invoices" checked>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3 p-3 border rounded">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <label class="form-label mb-0">Process payments and send instructions</label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="process_payments" name="process_payments" checked>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="mb-3 p-3 border rounded">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <label class="form-label mb-0">Export data to ERP and accounting systems</label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="export_data" name="export_data" checked>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3 p-3 border rounded">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <label class="form-label mb-0">Generate required reports</label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="generate_reports" name="generate_reports" checked>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="mb-3 p-3 border rounded">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <label class="form-label mb-0">Distribute reports to respective teams</label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="distribute_reports" name="distribute_reports" checked>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3 p-3 border rounded">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <label class="form-label mb-0">Ensure critical applications running early morning</label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="ensure_apps_running" name="ensure_apps_running" checked>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="mb-3 p-3 border rounded">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <label class="form-label mb-0">Ensure users can access updated reports</label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="ensure_user_access" name="ensure_user_access" checked>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+},
 
     // ===== UTILITY METHODS =====
 async apiCall(endpoint) {

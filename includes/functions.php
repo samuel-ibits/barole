@@ -461,3 +461,17 @@ function cleanOldLogs($days = 30) {
         error_log("Failed to clean old logs: " . $e->getMessage());
     }
 }
+
+/**
+ * Redirect to a URL
+ */
+
+function redirect($url) {
+    if (!headers_sent()) {
+        header("Location: $url");
+        exit();
+    } else {
+        echo "<script>window.location.href='$url';</script>";
+        exit();
+    }
+}

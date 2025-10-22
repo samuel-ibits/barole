@@ -199,7 +199,7 @@ function handleCreateCounterparty($db) {
 function handleUpdateCounterparty($db) {
     $input = json_decode(file_get_contents('php://input'), true);
     $id = (int)($input['id'] ?? 0);
-    
+       
     if ($id <= 0) {
         sendErrorResponse('Valid counterparty ID is required');
         return;
