@@ -1655,7 +1655,7 @@ window.ETRM = {
     getEntityConfigFromContainerId(containerId) {
         const map = {
             // Trading
-            'physical-sales-table': { title: 'Physical Sale', form: 'getPhysicalSaleForm', endpoint: 'trading/physical-sales.php', idParam: 'trade_id' },
+            'physical-sales-table': { title: 'Physical Sale', form: 'getPhysicalSaleForm', endpoint: 'trading/physical-sales.php', idParam: 'sale_id' },
             'financial-trades-table': { title: 'Financial Trade', form: 'getFinancialTradeForm', endpoint: 'trading/financial-trades.php', idParam: 'trade_id' },
             'fx-trades-table': { title: 'FX Trade', form: 'getFXTradeForm', endpoint: 'trading/fx-trades.php', idParam: 'trade_id' },
 
@@ -1790,27 +1790,31 @@ window.ETRM = {
     // ===== COLUMN DEFINITIONS =====
     getPhysicalSalesColumns() {
         return [
-            { field: 'trade_id', title: 'Trade ID' },
-            { field: 'counterparty_name', title: 'Counterparty' },
+            { field: 'sale_id', title: 'Sale ID' },
             { field: 'product_name', title: 'Product' },
             { field: 'quantity', title: 'Quantity', type: 'number' },
             { field: 'price', title: 'Price', type: 'currency' },
+            { field: 'currency', title: 'Currency' },
+            { field: 'counterparty_name', title: 'Counterparty' },
+            { field: 'business_unit_name', title: 'Business Unit' },
+            { field: 'trader_name', title: 'Trader' },
             { field: 'status', title: 'Status', type: 'status' },
-            { field: 'trade_date', title: 'Date', type: 'date' }
+            { field: 'delivery_date', title: 'Delivery Date', type: 'date' }
         ];
     },
 
     getFinancialTradesColumns() {
         return [
             { field: 'trade_id', title: 'Trade ID' },
-            { field: 'counterparty_name', title: 'Counterparty' },
             { field: 'commodity_name', title: 'Commodity' },
             { field: 'trade_type', title: 'Trade Type' },
             { field: 'contract_type', title: 'Contract Type' },
             { field: 'quantity', title: 'Quantity', type: 'number' },
             { field: 'price', title: 'Price', type: 'currency' },
             { field: 'currency', title: 'Currency' },
-            { field: 'total_value', title: 'Total Value', type: 'currency' },
+            { field: 'counterparty_name', title: 'Counterparty' },
+            { field: 'business_unit_name', title: 'Business Unit' },
+            { field: 'trader_name', title: 'Trader' },
             { field: 'status', title: 'Status', type: 'status' },
             { field: 'settlement_date', title: 'Settlement', type: 'date' }
         ];
@@ -2319,37 +2323,49 @@ window.ETRM = {
         const form = document.getElementById('createForm');
         const saveBtn = document.getElementById('saveBtn');
         const formData = new FormData(form);
-
-        // Special validation for user creation
-        if (apiEndpoint.includes('users/create')) {
+    
+        // Auto-detect edit mode if the form includes an "id" field
+        const recordId = formData.get('id');
+        const isEdit = !!recordId;
+    
+        // Special validation for user creation (only for new users)
+        if (apiEndpoint.includes('users/create') && !isEdit) {
             const password = formData.get('password');
             const confirmPassword = formData.get('confirm_password');
-            
+    
             if (password !== confirmPassword) {
                 this.showNotification('Error', 'Passwords do not match', 'danger');
                 return;
             }
-            
+    
             if (password.length < 8) {
                 this.showNotification('Error', 'Password must be at least 8 characters long', 'danger');
                 return;
             }
         }
-
+    
+        // Handle edit: append ?id=123 and use PUT method
+        let method = 'POST';
+        let url = `api/${apiEndpoint}`;
+        if (isEdit) {
+            const separator = apiEndpoint.includes('?') ? '&' : '?';
+            url = `api/${apiEndpoint}${separator}id=${recordId}`;
+            method = 'PUT';
+        }
+    
         // Show loading state
         const originalText = saveBtn.innerHTML;
         saveBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Saving...';
         saveBtn.disabled = true;
-
+    
         // Submit to API
-        fetch(`api/${apiEndpoint}`, {
-            method: 'POST',
+        fetch(url, {
+            method,
             body: formData
         })
         .then(response => {
             console.log('Response status:', response.status);
-            console.log('Response headers:', response.headers);
-            return response.text(); // Get text first to see what we're receiving
+            return response.text();
         })
         .then(text => {
             console.log('Response text:', text);
@@ -2358,11 +2374,8 @@ window.ETRM = {
                 data = JSON.parse(text);
             } catch (e) {
                 console.error('JSON parse error:', e);
-                console.error('Raw response:', text);
-                
-                // Check if response contains HTML (likely an error page)
-                if (text.includes('<!DOCTYPE html>') || text.includes('<html>')) {
-                    throw new Error('Server returned an error page instead of JSON. Check authentication or API endpoint.');
+                if (text.includes('<html>')) {
+                    throw new Error('Server returned HTML instead of JSON. Check authentication or API endpoint.');
                 } else {
                     throw new Error(`Invalid JSON response: ${text.substring(0, 100)}...`);
                 }
@@ -2374,34 +2387,37 @@ window.ETRM = {
                 // Close modal
                 const modal = bootstrap.Modal.getInstance(document.getElementById(modalId));
                 modal.hide();
-
-                // Show success message first
+    
+                // Show success message
                 const recordType = apiEndpoint.split('/').pop().replace('.php', '').replace('-', ' ');
-                this.showNotification('Success', `${recordType} created successfully!`, 'success');
-
-                // Refresh the current table with a small delay to ensure DB transaction is complete
+                const action = isEdit ? 'updated' : 'created';
+                this.showNotification('Success', `${recordType} ${action} successfully!`, 'success');
+    
+                // Refresh table
                 setTimeout(() => {
                     try {
                         this.refreshCurrentTable();
                     } catch (refreshError) {
                         console.error('Table refresh failed:', refreshError);
-                        this.showNotification('Info', 'Record created successfully. Please refresh the page to see the new data.', 'info');
+                        this.showNotification('Info', `Record ${action} successfully. Please refresh the page to see the latest data.`, 'info');
                     }
                 }, 200);
             } else {
-                throw new Error(data.message || 'Failed to create record');
+                throw new Error(data.message || `Failed to ${isEdit ? 'update' : 'create'} record`);
             }
         })
         .catch(error => {
-            console.error('Create error:', error);
-            this.showNotification('Error', error.message || 'Failed to create record', 'danger');
+            console.error(`${isEdit ? 'Update' : 'Create'} error:`, error);
+            this.showNotification('Error', error.message || `Failed to ${isEdit ? 'update' : 'create'} record`, 'danger');
         })
         .finally(() => {
             // Restore button
             saveBtn.innerHTML = originalText;
             saveBtn.disabled = false;
         });
-    },
+    }
+    
+,    
 
     refreshCurrentTable() {
         try {
@@ -2475,46 +2491,49 @@ window.ETRM = {
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="trade_id" name="trade_id" placeholder="Trade ID" required>
-                        <label for="trade_id">Trade ID</label>
+                        <input type="text" class="form-control" id="sale_id" name="sale_id" placeholder="Sale ID" required>
+                        <label for="sale_id">Sale ID</label>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="form-floating mb-3">
-                        <select class="form-control" id="counterparty_id" name="counterparty_id" required>
-                            <option value="">Select Counterparty</option>
-                            <option value="1">ABC Energy Corp</option>
-                            <option value="2">XYZ Trading Ltd</option>
-                            <option value="3">Global Petro Inc</option>
-                        </select>
-                        <label for="counterparty_id">Counterparty</label>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
                         <select class="form-control" id="product_id" name="product_id" required>
                             <option value="">Select Product</option>
-                            <option value="1">Crude Oil WTI</option>
-                            <option value="2">Natural Gas</option>
-                            <option value="3">Gasoline</option>
+                            <option value="1">WTI-CRUDE - West Texas Intermediate Crude Oil</option>
+                            <option value="2">BRENT-CRUDE - Brent Crude Oil</option>
+                            <option value="3">GASOLINE-REG - Regular Gasoline</option>
+                            <option value="4">DIESEL-ULSD - Ultra Low Sulfur Diesel</option>
+                            <option value="5">NAT-GAS - Natural Gas</option>
                         </select>
                         <label for="product_id">Product</label>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-floating mb-3">
-                        <input type="number" class="form-control" id="quantity" name="quantity" placeholder="Quantity" step="0.01" required>
-                        <label for="quantity">Quantity</label>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="number" class="form-control" id="price" name="price" placeholder="Price" step="0.01" required>
+                        <input type="number" class="form-control" id="quantity" name="quantity" placeholder="Quantity" step="0.0001" required>
+                        <label for="quantity">Quantity</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="number" class="form-control" id="price" name="price" placeholder="Price" step="0.0001" required>
                         <label for="price">Price per Unit</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <select class="form-control" id="currency" name="currency" required>
+                            <option value="">Select Currency</option>
+                            <option value="USD">USD - US Dollar</option>
+                            <option value="EUR">EUR - Euro</option>
+                            <option value="GBP">GBP - British Pound</option>
+                            <option value="JPY">JPY - Japanese Yen</option>
+                        </select>
+                        <label for="currency">Currency</label>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -2527,18 +2546,89 @@ window.ETRM = {
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <select class="form-control" id="status" name="status" required>
-                            <option value="pending">Pending</option>
-                            <option value="confirmed">Confirmed</option>
-                            <option value="executed">Executed</option>
+                        <select class="form-control" id="counterparty_id" name="counterparty_id" required>
+                            <option value="">Select Counterparty</option>
+                            <option value="1">Shell Trading</option>
+                            <option value="2">BP Energy</option>
+                            <option value="3">ExxonMobil</option>
+                            <option value="4">Total Energies</option>
                         </select>
-                        <label for="status">Status</label>
+                        <label for="counterparty_id">Counterparty</label>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="location" name="location" placeholder="Location">
-                        <label for="location">Location</label>
+                        <select class="form-control" id="loading_port_id" name="loading_port_id">
+                            <option value="">Select Loading Port</option>
+                            <option value="1">USGOM - US Gulf of Mexico</option>
+                            <option value="2">SING - Singapore</option>
+                            <option value="3">RDAM - Rotterdam</option>
+                            <option value="4">FUJAIRAH - Fujairah</option>
+                            <option value="5">HOUSTON - Houston Ship Channel</option>
+                        </select>
+                        <label for="loading_port_id">Loading Port</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <select class="form-control" id="discharge_port_id" name="discharge_port_id">
+                            <option value="">Select Discharge Port</option>
+                            <option value="1">USGOM - US Gulf of Mexico</option>
+                            <option value="2">SING - Singapore</option>
+                            <option value="3">RDAM - Rotterdam</option>
+                            <option value="4">FUJAIRAH - Fujairah</option>
+                            <option value="5">HOUSTON - Houston Ship Channel</option>
+                        </select>
+                        <label for="discharge_port_id">Discharge Port</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <select class="form-control" id="business_unit_id" name="business_unit_id" required>
+                            <option value="">Select Business Unit</option>
+                            <option value="1">TRADING - Trading Operations</option>
+                            <option value="2">SUPPLY - Supply Chain</option>
+                            <option value="3">MARKETING - Marketing & Sales</option>
+                            <option value="4">RISK - Risk Management</option>
+                        </select>
+                        <label for="business_unit_id">Business Unit</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <select class="form-control" id="trader_id" name="trader_id" required>
+                            <option value="">Select Trader</option>
+                            <option value="1">Administrator</option>
+                            <option value="4">Test User</option>
+                            <option value="5">Richard</option>
+                        </select>
+                        <label for="trader_id">Trader</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <select class="form-control" id="status" name="status" required>
+                            <option value="draft">Draft</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="shipped">Shipped</option>
+                            <option value="delivered">Delivered</option>
+                            <option value="invoiced">Invoiced</option>
+                            <option value="paid">Paid</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                        <label for="status">Status</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-floating mb-3">
+                        <textarea class="form-control" id="notes" name="notes" placeholder="Notes" style="height: 100px"></textarea>
+                        <label for="notes">Notes</label>
                     </div>
                 </div>
             </div>
@@ -2551,21 +2641,18 @@ window.ETRM = {
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="trade_id" name="trade_id" 
-                               placeholder="Trade ID" required pattern="FX[0-9]{4}[A-Z0-9]+" 
-                               title="Trade ID format: FX followed by numbers and letters">
+                               placeholder="Trade ID" required>
                         <label for="trade_id">Trade ID</label>
-                        <div class="form-text">Format: FX2024001 (will auto-generate if empty)</div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
                         <select class="form-control" id="counterparty_id" name="counterparty_id" required>
                             <option value="">Select Counterparty</option>
-                            <option value="1">ABC Energy Corp</option>
-                            <option value="2">XYZ Trading Ltd</option>
-                            <option value="3">Global Petro Inc</option>
-                            <option value="4">Euro Gas Solutions</option>
-                            <option value="5">Asia Energy Partners</option>
+                            <option value="1">Shell Trading</option>
+                            <option value="2">BP Energy</option>
+                            <option value="3">ExxonMobil</option>
+                            <option value="4">Total Energies</option>
                         </select>
                         <label for="counterparty_id">Counterparty</label>
                     </div>
@@ -2574,29 +2661,7 @@ window.ETRM = {
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <select class="form-control" id="business_unit_id" name="business_unit_id" required>
-                            <option value="1">North America Trading</option>
-                            <option value="2">Europe Trading</option>
-                            <option value="3">Asia Pacific Trading</option>
-                        </select>
-                        <label for="business_unit_id">Business Unit</label>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-floating mb-3">
-                        <select class="form-control" id="trade_type" name="trade_type" required>
-                            <option value="">Select Trade Type</option>
-                            <option value="buy">Buy</option>
-                            <option value="sell">Sell</option>
-                        </select>
-                        <label for="trade_type">Trade Type</label>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-floating mb-3">
-                        <select class="form-control" id="base_currency" name="base_currency" required onchange="generateFXTradeId()">
+                        <select class="form-control" id="base_currency" name="base_currency" required>
                             <option value="">Select Base Currency</option>
                             <option value="USD">USD - US Dollar</option>
                             <option value="EUR">EUR - Euro</option>
@@ -2611,7 +2676,7 @@ window.ETRM = {
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <select class="form-control" id="quote_currency" name="quote_currency" required onchange="generateFXTradeId()">
+                        <select class="form-control" id="quote_currency" name="quote_currency" required>
                             <option value="">Select Quote Currency</option>
                             <option value="USD">USD - US Dollar</option>
                             <option value="EUR">EUR - Euro</option>
@@ -2626,45 +2691,75 @@ window.ETRM = {
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <select class="form-control" id="trade_type" name="trade_type" required>
+                            <option value="">Select Trade Type</option>
+                            <option value="buy">Buy</option>
+                            <option value="sell">Sell</option>
+                        </select>
+                        <label for="trade_type">Trade Type</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
                     <div class="form-floating mb-3">
                         <input type="number" class="form-control" id="amount" name="amount" 
-                               placeholder="Amount" step="0.01" min="0" required onchange="calculateFXTotal()">
+                               placeholder="Amount" step="0.0001" min="0" required>
                         <label for="amount">Amount (Base Currency)</label>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-floating mb-3">
-                        <input type="number" class="form-control" id="exchange_rate" name="exchange_rate" 
-                               placeholder="Exchange Rate" step="0.000001" min="0" required onchange="calculateFXTotal()">
-                        <label for="exchange_rate">Exchange Rate</label>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="total_value" name="total_value" 
-                               placeholder="Total Value" readonly>
-                        <label for="total_value">Total Value (Quote Currency)</label>
                     </div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="number" class="form-control" id="exchange_rate" name="exchange_rate" 
+                               placeholder="Exchange Rate" step="0.00000001" min="0" required>
+                        <label for="exchange_rate">Exchange Rate</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="date" class="form-control" id="settlement_date" name="settlement_date">
+                        <label for="settlement_date">Settlement Date</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
                     <div class="form-floating mb-3">
                         <input type="date" class="form-control" id="trade_date" name="trade_date" required>
                         <label for="trade_date">Trade Date</label>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <div class="form-floating mb-3">
                         <input type="date" class="form-control" id="value_date" name="value_date" required>
                         <label for="value_date">Value Date</label>
                     </div>
                 </div>
-                <div class="col-md-4">
+            </div>
+            <div class="row">
+                <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="date" class="form-control" id="settlement_date" name="settlement_date">
-                        <label for="settlement_date">Settlement Date</label>
+                        <select class="form-control" id="business_unit_id" name="business_unit_id" required>
+                            <option value="">Select Business Unit</option>
+                            <option value="1">TRADING - Trading Operations</option>
+                            <option value="2">SUPPLY - Supply Chain</option>
+                            <option value="3">MARKETING - Marketing & Sales</option>
+                            <option value="4">RISK - Risk Management</option>
+                        </select>
+                        <label for="business_unit_id">Business Unit</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <select class="form-control" id="trader_id" name="trader_id" required>
+                            <option value="">Select Trader</option>
+                            <option value="1">Administrator</option>
+                            <option value="4">Test User</option>
+                            <option value="5">Richard</option>
+                        </select>
+                        <label for="trader_id">Trader</label>
                     </div>
                 </div>
             </div>
@@ -2675,55 +2770,13 @@ window.ETRM = {
                             <option value="pending">Pending</option>
                             <option value="confirmed">Confirmed</option>
                             <option value="executed">Executed</option>
+                            <option value="settled">Settled</option>
+                            <option value="cancelled">Cancelled</option>
                         </select>
                         <label for="status">Status</label>
                     </div>
                 </div>
             </div>
-            
-            <script>
-                // Auto-calculate total value for FX trades
-                function calculateFXTotal() {
-                    const amount = parseFloat(document.getElementById('amount').value) || 0;
-                    const rate = parseFloat(document.getElementById('exchange_rate').value) || 0;
-                    const total = amount * rate;
-                    document.getElementById('total_value').value = total.toFixed(2);
-                }
-                
-                // Set default dates for FX trades
-                function setFXDefaultDates() {
-                    const today = new Date().toISOString().split('T')[0];
-                    const valueDateField = document.getElementById('value_date');
-                    const tradeDateField = document.getElementById('trade_date');
-                    
-                    if (!tradeDateField.value) {
-                        tradeDateField.value = today;
-                    }
-                    
-                    // Set value date to T+2 (2 business days)
-                    if (!valueDateField.value) {
-                        const valueDate = new Date();
-                        valueDate.setDate(valueDate.getDate() + 2);
-                        valueDateField.value = valueDate.toISOString().split('T')[0];
-                    }
-                }
-                
-                // Generate FX trade ID based on currencies
-                function generateFXTradeId() {
-                    const baseCurrency = document.getElementById('base_currency').value;
-                    const quoteCurrency = document.getElementById('quote_currency').value;
-                    const tradeIdField = document.getElementById('trade_id');
-                    
-                    if (baseCurrency && quoteCurrency && !tradeIdField.value) {
-                        const timestamp = new Date().toISOString().replace(/[-:.TZ]/g, '').substring(0, 12);
-                        const random = Math.random().toString(36).substring(2, 5).toUpperCase();
-                        tradeIdField.value = 'FX' + timestamp + random;
-                    }
-                }
-                
-                // Set default dates when form loads
-                setTimeout(setFXDefaultDates, 100);
-            </script>
         `;
     },
 
@@ -2732,31 +2785,69 @@ window.ETRM = {
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="code" name="code" placeholder="Code" required>
-                        <label for="code">Code</label>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Name" required>
+                        <label for="name">Name</label>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Name" required>
-                        <label for="name">Name</label>
+                        <select class="form-control" id="type" name="type" required>
+                            <option value="">Select Type</option>
+                            <option value="supplier">Supplier</option>
+                            <option value="customer">Customer</option>
+                            <option value="broker">Broker</option>
+                            <option value="bank">Bank</option>
+                        </select>
+                        <label for="type">Type</label>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <select class="form-control" id="type" name="type" required>
-                            <option value="buyer">Buyer</option>
-                            <option value="seller">Seller</option>
-                            <option value="both">Both</option>
-                        </select>
-                        <label for="type">Type</label>
+                        <input type="text" class="form-control" id="contact_person" name="contact_person" placeholder="Contact Person">
+                        <label for="contact_person">Contact Person</label>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="country" name="country" placeholder="Country" required>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Email">
+                        <label for="email">Email</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="Phone">
+                        <label for="phone">Phone</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="tax_id" name="tax_id" placeholder="Tax ID">
+                        <label for="tax_id">Tax ID</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-floating mb-3">
+                        <textarea class="form-control" id="address" name="address" placeholder="Address" style="height: 100px"></textarea>
+                        <label for="address">Address</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="city" name="city" placeholder="City">
+                        <label for="city">City</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="country" name="country" placeholder="Country">
                         <label for="country">Country</label>
                     </div>
                 </div>
@@ -2764,20 +2855,19 @@ window.ETRM = {
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="email" name="email" placeholder="Email">
-                        <label for="email">Email</label>
+                        <input type="text" class="form-control" id="credit_rating" name="credit_rating" placeholder="Credit Rating">
+                        <label for="credit_rating">Credit Rating</label>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="Phone">
-                        <label for="phone">Phone</label>
+                        <select class="form-control" id="status" name="status" required>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                        <label for="status">Status</label>
                     </div>
                 </div>
-            </div>
-            <div class="form-floating mb-3">
-                <textarea class="form-control" id="address" name="address" placeholder="Address" style="height: 100px"></textarea>
-                <label for="address">Address</label>
             </div>
         `;
     },
@@ -2865,108 +2955,121 @@ window.ETRM = {
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="trade_id" name="trade_id" 
-                               placeholder="Trade ID" required pattern="FT[0-9]{4}[A-Z0-9]+" 
-                               title="Trade ID format: FT followed by numbers and letters">
+                               placeholder="Trade ID" required>
                         <label for="trade_id">Trade ID</label>
-                        <div class="form-text">Format: FT2024001 (will auto-generate if empty)</div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <select class="form-control" id="counterparty_id" name="counterparty_id" required>
-                            <option value="">Select Counterparty</option>
-                            <option value="1">ABC Energy Corp</option>
-                            <option value="2">XYZ Trading Ltd</option>
-                            <option value="3">Global Petro Inc</option>
-                            <option value="4">Euro Gas Solutions</option>
-                            <option value="5">Asia Energy Partners</option>
+                        <select class="form-control" id="commodity_id" name="commodity_id" required>
+                            <option value="">Select Commodity</option>
+                            <option value="1">WTI-CRUDE - West Texas Intermediate Crude Oil</option>
+                            <option value="2">BRENT-CRUDE - Brent Crude Oil</option>
+                            <option value="3">GASOLINE-REG - Regular Gasoline</option>
+                            <option value="4">DIESEL-ULSD - Ultra Low Sulfur Diesel</option>
+                            <option value="5">NAT-GAS - Natural Gas</option>
                         </select>
-                        <label for="counterparty_id">Counterparty</label>
+                        <label for="commodity_id">Commodity</label>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <select class="form-control" id="commodity_id" name="commodity_id" required>
-                            <option value="">Select Commodity</option>
-                            <option value="1">Crude Oil WTI</option>
-                            <option value="2">Natural Gas Henry Hub</option>
-                            <option value="3">Gasoline RBOB</option>
-                            <option value="4">Diesel ULSD</option>
-                            <option value="5">Jet Fuel</option>
+                        <select class="form-control" id="trade_type" name="trade_type" required>
+                            <option value="">Select Trade Type</option>
+                            <option value="buy">Buy</option>
+                            <option value="sell">Sell</option>
+                            <option value="hedge">Hedge</option>
                         </select>
-                        <label for="commodity_id">Commodity</label>
+                        <label for="trade_type">Trade Type</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <select class="form-control" id="contract_type" name="contract_type" required>
+                            <option value="">Select Contract Type</option>
+                            <option value="futures">Futures</option>
+                            <option value="options">Options</option>
+                            <option value="swaps">Swaps</option>
+                            <option value="forwards">Forwards</option>
+                        </select>
+                        <label for="contract_type">Contract Type</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="number" class="form-control" id="quantity" name="quantity" 
+                               placeholder="Quantity" step="0.0001" min="0" required>
+                        <label for="quantity">Quantity</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="number" class="form-control" id="price" name="price" 
+                               placeholder="Price" step="0.0001" min="0" required>
+                        <label for="price">Price per Unit</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <select class="form-control" id="currency" name="currency" required>
+                            <option value="">Select Currency</option>
+                            <option value="USD">USD - US Dollar</option>
+                            <option value="EUR">EUR - Euro</option>
+                            <option value="GBP">GBP - British Pound</option>
+                            <option value="JPY">JPY - Japanese Yen</option>
+                        </select>
+                        <label for="currency">Currency</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="date" class="form-control" id="settlement_date" name="settlement_date">
+                        <label for="settlement_date">Settlement Date</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <select class="form-control" id="counterparty_id" name="counterparty_id" required>
+                            <option value="">Select Counterparty</option>
+                            <option value="1">Shell Trading</option>
+                            <option value="2">BP Energy</option>
+                            <option value="3">ExxonMobil</option>
+                            <option value="4">Total Energies</option>
+                        </select>
+                        <label for="counterparty_id">Counterparty</label>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
                         <select class="form-control" id="business_unit_id" name="business_unit_id" required>
-                            <option value="1">North America Trading</option>
-                            <option value="2">Europe Trading</option>
-                            <option value="3">Asia Pacific Trading</option>
+                            <option value="">Select Business Unit</option>
+                            <option value="1">TRADING - Trading Operations</option>
+                            <option value="2">SUPPLY - Supply Chain</option>
+                            <option value="3">MARKETING - Marketing & Sales</option>
+                            <option value="4">RISK - Risk Management</option>
                         </select>
                         <label for="business_unit_id">Business Unit</label>
                     </div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-4">
-                    <div class="form-floating mb-3">
-                        <input type="number" class="form-control" id="quantity" name="quantity" 
-                               placeholder="Quantity" step="0.01" min="0" required>
-                        <label for="quantity">Quantity</label>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-floating mb-3">
-                        <input type="number" class="form-control" id="price" name="price" 
-                               placeholder="Price" step="0.01" min="0" required>
-                        <label for="price">Price per Unit</label>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-floating mb-3">
-                        <select class="form-control" id="currency" name="currency" required>
-                            <option value="USD">USD</option>
-                            <option value="EUR">EUR</option>
-                            <option value="GBP">GBP</option>
-                            <option value="CAD">CAD</option>
-                        </select>
-                        <label for="currency">Currency</label>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                                 <div class="col-md-6">
-                     <div class="form-floating mb-3">
-                         <select class="form-control" id="trade_type" name="trade_type" required>
-                             <option value="">Select Trade Type</option>
-                             <option value="buy">Buy</option>
-                             <option value="sell">Sell</option>
-                             <option value="hedge">Hedge</option>
-                         </select>
-                         <label for="trade_type">Trade Type</label>
-                     </div>
-                 </div>
-                 <div class="col-md-6">
-                     <div class="form-floating mb-3">
-                         <select class="form-control" id="contract_type" name="contract_type" required onchange="toggleContractTypeFields()">
-                             <option value="">Select Contract Type</option>
-                             <option value="futures">Futures</option>
-                             <option value="options">Options</option>
-                             <option value="swaps">Swaps</option>
-                             <option value="forwards">Forwards</option>
-                         </select>
-                         <label for="contract_type">Contract Type</label>
-                     </div>
-                 </div>
-            </div>
-            <div class="row">
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="date" class="form-control" id="settlement_date" name="settlement_date" required>
-                        <label for="settlement_date">Settlement Date</label>
+                        <select class="form-control" id="trader_id" name="trader_id" required>
+                            <option value="">Select Trader</option>
+                            <option value="1">Administrator</option>
+                            <option value="4">Test User</option>
+                            <option value="5">Richard</option>
+                        </select>
+                        <label for="trader_id">Trader</label>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -2975,8 +3078,60 @@ window.ETRM = {
                             <option value="pending">Pending</option>
                             <option value="confirmed">Confirmed</option>
                             <option value="executed">Executed</option>
+                            <option value="settled">Settled</option>
+                            <option value="cancelled">Cancelled</option>
                         </select>
                         <label for="status">Status</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="number" class="form-control" id="margin_requirement" name="margin_requirement" 
+                               placeholder="Margin Requirement" step="0.01" min="0">
+                        <label for="margin_requirement">Margin Requirement</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="exchange" name="exchange" placeholder="Exchange">
+                        <label for="exchange">Exchange</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="contract_month" name="contract_month" 
+                               placeholder="Contract Month" pattern="[0-9]{4}-[0-9]{2}" title="Format: YYYY-MM">
+                        <label for="contract_month">Contract Month (YYYY-MM)</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="number" class="form-control" id="strike_price" name="strike_price" 
+                               placeholder="Strike Price" step="0.0001" min="0">
+                        <label for="strike_price">Strike Price</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <select class="form-control" id="option_type" name="option_type">
+                            <option value="">Select Option Type</option>
+                            <option value="call">Call Option</option>
+                            <option value="put">Put Option</option>
+                        </select>
+                        <label for="option_type">Option Type</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="number" class="form-control" id="premium" name="premium" 
+                               placeholder="Premium" step="0.0001" min="0">
+                        <label for="premium">Premium</label>
                     </div>
                 </div>
             </div>

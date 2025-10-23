@@ -172,3 +172,170 @@ function testDatabaseConnection() {
         return false;
     }
 } 
+
+function parseFormDataInput() {
+    $rawData = file_get_contents("php://input");
+    $data = [];
+
+    // Check if Content-Type is multipart/form-data
+    if (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'multipart/form-data') !== false) {
+        // Extract boundary
+        preg_match('/boundary=(.*)$/', $_SERVER['CONTENT_TYPE'], $matches);
+        $boundary = $matches[1] ?? '';
+        $blocks = preg_split("/-+$boundary/", $rawData);
+        
+        foreach ($blocks as $block) {
+            if (empty(trim($block))) continue;
+            if (strpos($block, 'application/octet-stream') !== false) continue; // skip files for now
+
+            if (preg_match('/name="([^"]*)"\s*(?:;[^\r\n]*)?\r\n\r\n(.*)\r\n$/s', $block, $matches)) {
+                $name = $matches[1];
+                $value = trim($matches[2]);
+                $data[$name] = $value;
+            }
+        }
+    } else {
+        // Try to parse as JSON
+        $json = json_decode($rawData, true);
+        if (is_array($json)) {
+            $data = $json;
+        }
+    }
+
+    return $data;
+}
+
+function handleGenericGet($db, $table, $allowedFields = [], $searchableFields = [], $defaultOrder = 'id ASC') {
+    // Handle single record fetch
+    if (isset($_GET['id']) && is_numeric($_GET['id'])) {
+        $id = (int)$_GET['id'];
+        $query = "SELECT * FROM {$table} WHERE id = ? LIMIT 1";
+        $record = $db->query($query, [$id])->fetch();
+
+        if ($record) {
+            sendJSONResponse([
+                'success' => true,
+                'data' => $record
+            ]);
+        } else {
+            sendJSONResponse([
+                'success' => false,
+                'message' => ucfirst($table) . ' not found'
+            ]);
+        }
+        return;
+    }
+
+    // Pagination setup
+    $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+    $limit = isset($_GET['limit']) ? max(1, min(100, (int)$_GET['limit'])) : 25;
+    $offset = ($page - 1) * $limit;
+
+    // Search and filters
+    $whereConditions = [];
+    $params = [];
+
+    if (!empty($_GET['search']) && !empty($searchableFields)) {
+        $searchTerm = '%' . trim($_GET['search']) . '%';
+        $conditions = array_map(fn($f) => "{$f} LIKE ?", $searchableFields);
+        $whereConditions[] = '(' . implode(' OR ', $conditions) . ')';
+        foreach ($searchableFields as $f) $params[] = $searchTerm;
+    }
+
+    // Optional status or other filters
+    foreach ($_GET as $key => $value) {
+        if (!in_array($key, ['page', 'limit', 'search', 'id']) && $value !== '') {
+            $whereConditions[] = "{$key} = ?";
+            $params[] = $value;
+        }
+    }
+
+    $whereClause = !empty($whereConditions) ? 'WHERE ' . implode(' AND ', $whereConditions) : '';
+
+    // Count total
+    $countQuery = "SELECT COUNT(*) as total FROM {$table} {$whereClause}";
+    $totalResult = $db->query($countQuery, $params)->fetch();
+    $total = $totalResult['total'] ?? 0;
+
+    // Fetch data
+    $query = "SELECT * FROM {$table} {$whereClause} ORDER BY {$defaultOrder} LIMIT ? OFFSET ?";
+    $params[] = $limit;
+    $params[] = $offset;
+
+    $records = $db->query($query, $params)->fetchAll();
+
+    // Filter out unwanted fields if specified
+    if (!empty($allowedFields)) {
+        $records = array_map(function($r) use ($allowedFields) {
+            return array_intersect_key($r, array_flip($allowedFields));
+        }, $records);
+    }
+
+    // Response
+    sendJSONResponse([
+        'success' => true,
+        'data' => $records,
+        'pagination' => [
+            'page' => $page,
+            'limit' => $limit,
+            'total' => $total,
+            'total_pages' => ceil($total / $limit)
+        ]
+    ]);
+}
+function handleGenericCreate($db, $table, $requiredFields = [], $uniqueFields = []) {
+    // Ensure we’re using form-data or x-www-form-urlencoded
+    if (empty($_POST)) {
+        sendErrorResponse('No form data provided');
+        return;
+    }
+
+    $data = [];
+    foreach ($_POST as $key => $value) {
+        $data[$key] = trim($value);
+    }
+
+    // --- 1️⃣ Validate required fields ---
+    foreach ($requiredFields as $field) {
+        if (empty($data[$field])) {
+            sendErrorResponse("Field '{$field}' is required");
+            return;
+        }
+    }
+
+    // --- 2️⃣ Validate unique fields ---
+    foreach ($uniqueFields as $field) {
+        if (!empty($data[$field])) {
+            $existing = $db->query("SELECT id FROM {$table} WHERE {$field} = ?", [$data[$field]])->fetch();
+            if ($existing) {
+                sendErrorResponse("{$field} already exists");
+                return;
+            }
+        }
+    }
+
+    // --- 3️⃣ Auto default fields ---
+    if (!isset($data['status'])) {
+        $data['status'] = 'active';
+    }
+    if (!isset($data['created_at'])) {
+        $data['created_at'] = date('Y-m-d H:i:s');
+    }
+
+    // --- 4️⃣ Insert record ---
+    $newId = $db->insert($table, $data);
+
+    if ($newId) {
+        // Optional: Log action if function exists
+        if (function_exists('logUserActivity')) {
+            logUserActivity("create_{$table}", "Created new record in {$table}");
+        }
+
+        sendSuccessResponse([
+            'id' => $newId,
+            'data' => $data
+        ], ucfirst($table) . ' created successfully');
+    } else {
+        sendErrorResponse('Failed to create record');
+    }
+}
